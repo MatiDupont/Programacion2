@@ -1,0 +1,27 @@
+[
+    {
+        "id":1,
+        "user":"MatiasDupont",
+        "password":"1234"
+    },
+    {
+        "id":2,
+        "user":"MauroTorre",
+        "password":"1234"
+    },
+    {
+        "id":3,
+        "user":"MarcoUstarroz",
+        "password":"1234"
+    },
+    {
+        "id":4,
+        "user":"GuillermoReggiani",
+        "password":"1234"
+    },
+    {
+        "id":5,
+        "user":"JavierBalmaceda",
+        "password":"1234"
+    }
+]

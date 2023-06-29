@@ -1,0 +1,82 @@
+[
+    {
+        "id_director":1,
+        "director":"Steven Spielberg"
+    },
+    {
+        "id_director":2,
+        "director":"Martin Scorsese"
+    },
+    {
+        "id_director":3,
+        "director":"Christopher Nolan"
+    },
+    {
+        "id_director":4,
+        "director":"Quentin Tarantino"
+    },
+    {
+        "id_director":5,
+        "director":"Alfred Hitchcock"
+    },
+    {
+        "id_director":6,
+        "director":"Stanley Kubrick"
+    },
+    {
+        "id_director":7,
+        "director":"Francis Ford Coppola"
+    },
+    {
+        "id_director":8,
+        "director":"Ridley Scott"
+    },
+    {
+        "id_director":9,
+        "director":"James Cameron"
+    },
+    {
+        "id_director":10,
+        "director":"Pedro Almodóvar"
+    },
+    {
+        "id_director":11,
+        "director":"Frank Darabont"
+    },
+    {
+        "id_director":12,
+        "director":"Wes Anderson"
+    },
+    {
+        "id_director":13,
+        "director":"David Fincher"
+    },
+    {
+        "id_director":14,
+        "director":"Lana Wachowski"
+    },
+    {
+        "id_director":15,
+        "director":"Denis Villeneuve"
+    },
+    {
+        "id_director":16,
+        "director":"Damien Chazelle"
+    },
+    {
+        "id_director":17,
+        "director":"Sofia Coppola"
+    },
+    {
+        "id_director":18,
+        "director":"Clint Eastwood"
+    },
+    {
+        "id_director":19,
+        "director":"Ari Aster"
+    },
+    {
+        "id_director":20,
+        "director":"Tim Burton"
+    }
+]
