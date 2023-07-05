@@ -24,6 +24,7 @@ def mostrar_peliculas(peliculas):
             print("Director: " + pelicula["director"])
             print("Genero: " + pelicula["genero"])
             print("Sinopsis:" + pelicula["sinopsis"])
+            print("Comentarios:" + pelicula["comentarios"])
             print("---------------------------------")
             
 def existe_pelicula(titulo):
@@ -92,7 +93,7 @@ def agregar_pelicula():
             print("Los campos deben estar en el orden correcto. --> titulo, anio, director, genero, sinopsis, link, comentarios")
             salida = 1
             exit(1)
-    
+     
     if (salida == 0):   
         if (existe_pelicula(datos_json["titulo"]) == False):
             id_pelicula = len(peliculas_data[0]["peliculas"]) + 1
@@ -111,18 +112,67 @@ def agregar_pelicula():
         
             with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
                 json.dump(peliculas_data, archivo_peliculas, indent = 8)
-                print("Se cargo la pelicula nueva con exito.")
-                return Response(jsonify(nueva_pelicula["titulo"]), status = HTTPStatus.OK)
+                
+            print("Se cargo la pelicula nueva con exito.")
+            return Response(jsonify(nueva_pelicula["titulo"]), status = HTTPStatus.OK)
         else:
+            print("Error!. Pelicula ya cargada en base da datos.")
             Response(jsonify("No es posible agregar esa pelicula dado que ya se encuentra registrada en la base de datos del sistema."), status = HTTPStatus.BAD_REQUEST) 
            
-@app.route("/peliculas/editar", methods = ["PUT"])
-def editar_pelicula():
-    return 0
-
-@app.route("/peliculas/eliminar", methods = ["DELETE"])
-def eliminar_pelicula():
-    return 0
+@app.route("/peliculas/editar/<id>", methods = ["PUT"])
+def editar_pelicula(id):
+    datos_json = request.get_json()
+    
+    pelicula_editar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["id"] == int(id)), None)
+    
+    if pelicula_editar:
+        print("Pelicula encontrada.")
+        
+        titulo = datos_json["titulo"] or pelicula_editar["titulo"]
+        anio = datos_json["anio"] or pelicula_editar["anio"]
+        director = datos_json["director"] or pelicula_editar["director"]
+        genero = datos_json["genero"] or pelicula_editar["genero"]
+        sinopsis = datos_json["sinopsis"] or pelicula_editar["sinopsis"]
+        imagen = datos_json["link"] or pelicula_editar["link"]
+        comentarios = datos_json["comentarios"] or pelicula_editar["comentarios"]
+        
+        pelicula_editar["id"] = id
+        pelicula_editar["titulo"] = titulo
+        pelicula_editar["anio"] = anio
+        pelicula_editar["director"] = director
+        pelicula_editar["genero"] = genero
+        pelicula_editar["sinopsis"] = sinopsis
+        pelicula_editar["link"] = imagen
+        pelicula_editar["comentarios"] = comentarios
+        
+        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+            json.dump(peliculas_data, archivo_peliculas, indent = 8)
+        
+        print("La pelicula ha sido editada correctamente.")
+        return Response(jsonify(pelicula_editar["titulo"]), status = HTTPStatus.OK)
+    else:
+        print("Error!. Pelicula no encontrada.")
+        Response(jsonify("No se encontro la pelicula con el ID especificado."), status = HTTPStatus.NOT_FOUND)
+        
+@app.route("/peliculas/eliminar/<id>", methods = ["DELETE"])
+def eliminar_pelicula(id):
+    peliculas_eliminar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["id"] == int(id)), None)
+    
+    if peliculas_eliminar:
+        if (peliculas_eliminar["comentarios"] != ""):
+            peliculas_data[0]["peliculas"].remove(peliculas_eliminar)
+            
+            with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+                json.dump(peliculas_data, archivo_peliculas, indent = 8)
+                
+            print("La pelicula ha sido eliminada correctamente.")
+            return Response(jsonify(peliculas_eliminar["titulo"]), status = HTTPStatus.OK)
+        else:
+            print("Error!. Pelicula con comentarios.")
+            return Response(jsonify("No se puede eliminar la pelicula porque tiene comentarios de otros usuarios."), status = HTTPStatus.BAD_REQUEST)
+    else:
+        print("Error!. Pelicula no encontrada.")
+        return Response(jsonify("No se encontro la pelicula con el ID especificado."), status = HTTPStatus.NOT_FOUND)
     
 print("-----------------------------------------------")
 print("BIENVENIDO AL SISTEMA DE PELICULAS 'FILM QUEST'")
