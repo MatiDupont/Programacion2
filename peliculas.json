@@ -58,7 +58,7 @@
             "director":"Lana Wachowski",
             "genero":"Accion",
             "sinopsis":"Matrix presenta un futuro distópico en el que los seres humanos viven en una realidad simulada mientras sus cuerpos son utilizados como fuente de energía por máquinas inteligentes. El programador de software Neo (interpretado por Keanu Reeves) descubre la verdad sobre la Matrix y se une a un grupo de rebeldes para luchar contra las máquinas y liberar a la humanidad.",
-            "link":"https://pics.filmaffinity.com/Matrix-155050517-large.jpg",
+            "link":"",
             "comentarios":"Las actuaciones en The Matrix son sólidas y convincentes. Keanu Reeves interpreta magistralmente a Neo, el protagonista atrapado en una realidad simulada, y su transformación de un hombre común a un héroe es cautivadora. Laurence Fishburne y Carrie-Anne Moss también destacan en sus roles."
         },
         {
@@ -98,74 +98,73 @@
             "director":"Ari Aster",
             "genero":"Terror",
             "sinopsis":"Heredtary sigue la historia de la familia Graham, que comienza a experimentar fenómenos sobrenaturales después de la muerte de la abuela. Conforme los secretos oscuros de la familia se revelan, los miembros se ven envueltos en una espiral de horror y tragedia. La película se distingue por su atmósfera inquietante, actuaciones impactantes y giros inesperados, creando una experiencia terrorífica que se adentra en lo sobrenatural y lo psicológico.",
-            "link":"https://images-na.ssl-images-amazon.com/images/S/pv-target-images/514b504a348974c94df8e73409b39de751094aede7fdeec2ed5490ac26b99fa0._RI_TTW_.jpg",
+            "link":"",
             "comentarios":"Me quedé impresionado con la trama retorcida y perturbadora de 'Hereditary'. Cada escena está cuidadosamente construida para aumentar la tensión y el horror psicológico. Sin duda, una película que se quedará contigo mucho después de haberla visto."
         }
     ]
     },
-    {
-        "generos":
-        [
-            {
-                "nombre_genero":"Accion",
-                "id_genero":1
-            },
-            {
-                "nombre_genero":"Aventura",
-                "id_genero":2
-            },
-            {
-                "nombre_genero":"Comedia",
-                "id_genero":3
-            },
-            {
-                "nombre_genero":"Drama",
-                "id_genero":4
-            },
-            {
-                "nombre_genero":"Terror",
-                "id_genero":5
-            },
-            {
-                "nombre_genero":"Ciencia Ficcion",
-                "id_genero":6
-            },
-            {
-                "nombre_genero":"Romance",
-                "id_genero":7
-            },
-            {
-                "nombre_genero":"Fantasia",
-                "id_genero":8
-            },
-            {
-                "nombre_genero":"Suspenso",
-                "id_genero":9
-            },
-            {
-                "nombre_genero":"Animacion",
-                "id_genero":10
-            },
-            {
-                "nombre_genero":"Documental",
-                "id_genero":11
-            },
-            {
-                "nombre_genero":"Crimen",
-                "id_genero":12
-            },
-            {
-                "nombre_genero":"Misterio",
-                "id_genero":13
-            },
-            {
-                "nombre_genero":"Western",
-                "id_genero":14
-            },
-            {
-                "nombre_genero":"Musical",
-                "id_genero":15
-            }
-        ]
+    {"generos":
+    [
+        {
+            "nombre_genero":"Accion",
+            "id_genero":1
+        },
+        {
+            "nombre_genero":"Aventura",
+            "id_genero":2
+        },
+        {
+            "nombre_genero":"Comedia",
+            "id_genero":3
+        },
+        {
+            "nombre_genero":"Drama",
+            "id_genero":4
+        },
+        {
+            "nombre_genero":"Terror",
+            "id_genero":5
+        },
+        {
+            "nombre_genero":"Ciencia Ficcion",
+            "id_genero":6
+        },
+        {
+            "nombre_genero":"Romance",
+            "id_genero":7
+        },
+        {
+            "nombre_genero":"Fantasia",
+            "id_genero":8
+        },
+        {
+            "nombre_genero":"Suspenso",
+            "id_genero":9
+        },
+        {
+            "nombre_genero":"Animacion",
+            "id_genero":10
+        },
+        {
+            "nombre_genero":"Documental",
+            "id_genero":11
+        },
+        {
+            "nombre_genero":"Crimen",
+            "id_genero":12
+        },
+        {
+            "nombre_genero":"Misterio",
+            "id_genero":13
+        },
+        {
+            "nombre_genero":"Western",
+            "id_genero":14
+        },
+        {
+            "nombre_genero":"Musical",
+            "id_genero":15
+       }
+    ]
     }
 ]

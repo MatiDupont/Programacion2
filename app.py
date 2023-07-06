@@ -3,6 +3,7 @@
 from flask import Flask, jsonify, Response, request
 from http import HTTPStatus
 import json
+import subprocess
 
 app = Flask(__name__)
 
@@ -24,6 +25,7 @@ def mostrar_peliculas(peliculas):
             print("Director: " + pelicula["director"])
             print("Genero: " + pelicula["genero"])
             print("Sinopsis:" + pelicula["sinopsis"])
+            print("Imagen:" + pelicula["link"])
             print("Comentarios:" + pelicula["comentarios"])
             print("---------------------------------")
             
@@ -44,30 +46,34 @@ def home():
 @app.route("/peliculas/directores", methods = ["GET"])
 def devolver_directores():   
     directores = [director["nombre_director"] for director in directores_data[0]["directores"]]
-    return Response(jsonify(directores), status = HTTPStatus.OK)
+    return jsonify(directores), HTTPStatus.OK
 
 # 2. Devolver la lista de generos presentes en la plataforma
-@app.route("/peliculas/generos/todos")
+@app.route("/peliculas/generos/todos", methods = ["GET"])
 def devolver_todos_generos():
-    total_generos = [genero["nombre_genero"] for genero in peliculas_data[0]["generos"]]
-    return Response(jsonify(total_generos), methods = HTTPStatus.OK)
+    total_generos = [genero["nombre_genero"] for genero in peliculas_data[1]["generos"]]
+    return jsonify(total_generos),  HTTPStatus.OK
 
 @app.route("/peliculas/generos/presentes", methods = ["GET"])
 def devolver_generos():
     generos = list(set([pelicula["genero"] for pelicula in peliculas_data[0]["peliculas"]]))
-    return Response(jsonify(generos), status = HTTPStatus.OK) 
+    return jsonify(generos), HTTPStatus.OK
 
 # 3. Devolver la lista de peliculas dirigidas por un director en particular
 @app.route("/peliculas/directores/<director>", methods = ["GET"])
 def devolver_peliculas_por_director(director):
-    peliculas = [pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["director"] == director]
-    return Response(jsonify(peliculas), status = HTTPStatus.OK)
+    encontrar_director = next((dire for dire in directores_data[0]["directores"] if dire["nombre_director"] == director), None)
+    if encontrar_director:
+        peliculas = [pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["director"] == director]
+        return jsonify(peliculas), HTTPStatus.OK
+    else:
+        return jsonify("Director no encontrado."), HTTPStatus.NOT_FOUND
 
 # 4. Devolver las peliculas que tienen imagen de portada agregada
 @app.route("/peliculas/imagen", methods = ["GET"])
 def devolver_peliculas_con_imagen():
-    peliculas_imagen = [pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["link"]]
-    return Response(jsonify(peliculas_imagen), status = HTTPStatus.OK)
+    peliculas_imagen = [pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula.get("link") != ""]
+    return jsonify(peliculas_imagen), HTTPStatus.OK
 
 # 5. ABM de cada pelicula
 @app.route("/peliculas/agregar/nueva", methods = ["POST"])
@@ -174,57 +180,7 @@ def eliminar_pelicula(id):
         print("Error!. Pelicula no encontrada.")
         return Response(jsonify("No se encontro la pelicula con el ID especificado."), status = HTTPStatus.NOT_FOUND)
     
-print("-----------------------------------------------")
-print("BIENVENIDO AL SISTEMA DE PELICULAS 'FILM QUEST'")
-print("-----------------------------------------------")
 
-login = input("¿Ya estas registrado? Inicia sesion para acceder [Si - No]: ").lower()
-
-while (login != "si" and login != "no"):
-    login = input("¿Ya estas registrado? Inicia sesion para acceder [Si - No]: ").lower()
-
-if (login == "no"):
-    #El programa tendra un modulo publico, es decir, una pantalla que puede ser accedida sin necesidad de tener cuenta ni estar logueado
-    #En esa pantalla se mostraran las ultimas 10 peliculas agregadas al sistema independientemente del usuario
-    print("Usted solo puede acceder al modulo publico ya que no esta logueado en el sistema.")
-    print("A continuacion se mostraran las ultimas 10 peliculas agregadas al sistema:\n")
-    mostrar_peliculas(peliculas_data[0]["peliculas"])     
-    print("\nGracias por utilizar el sistema, hasta la proxima!")
-else:
-    username = input("Ingrese nombre de usuario: ")
-    password = input ("Ingrese su contraseña: ")
-
-    usuario = next((usuario for usuario in usuarios_data[0]["usuarios"] if usuario["user"] == username and usuario["password"] == password), None)
-    
-    if usuario:
-        flag = True
-        print("¡Usuario encontrado en la base de datos!")
-        
-        while (True):
-            print("\n --- Menu de opciones ---")
-            print("1. Agregar pelicula")
-            print("2. Editar pelicula")
-            print("3. Eliminar pelicula")
-            print("4. Mostrar ultimas (10) peliculas")
-            print("5. Salir\n")
-            
-            opcion = int(input("Ingrese una opcion: "))
-            
-            if (opcion == 1):
-                agregar_pelicula()
-            elif (opcion == 2):
-                editar_pelicula()
-            elif (opcion == 3):
-                eliminar_pelicula()
-            elif (opcion == 4):
-                mostrar_peliculas(peliculas_data[0]["peliculas"])
-            elif (opcion == 5):
-                print("Gracias por utilizar el sistema. Hasta luego!")
-                exit(0)
-            else:
-                print("Opcion invalida. Intente nuevamente.")
-    else:
-        print("Error, el usuario no fue encontrado en la base de datos.")
 
 if __name__ == "__main__":
    app.run(debug = True)
