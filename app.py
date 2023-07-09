@@ -43,6 +43,13 @@ def existe_director(nombre):
     else:
         return False
     
+def existe_genero(genero):
+    pelicula_genero = next((gen for gen in peliculas_data[1]["generos"] if gen["nombre_genero"].lower() == genero.lower()), None)
+    if pelicula_genero:
+        return True
+    else:
+        return False
+    
 def buscar_peliculas(dato):
     resultados = []
     for pelicula in peliculas_data[0]["peliculas"]:
@@ -130,8 +137,7 @@ def agregar_pelicula():
         
             with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
                 json.dump(peliculas_data, archivo_peliculas, indent = 4)
-            
-            #modificar el printeo para que se vea mejor por consola    
+              
             print("Se cargo la pelicula nueva con exito.")
             return jsonify(nueva_pelicula["titulo"]), HTTPStatus.OK
         else:
@@ -194,6 +200,7 @@ def eliminar_pelicula(id):
         return jsonify("No se encontro la pelicula con el ID especificado."), HTTPStatus.NOT_FOUND
 
 # Buscador de peliculas y directores
+# BUSCADOR DE PELICULAS
 @app.route("/buscador/peliculas", methods = ["POST"])
 def buscador_peliculas():
     datos_json = request.get_json()
@@ -209,6 +216,7 @@ def buscador_peliculas():
     
     return jsonify(resultado), HTTPStatus.OK
 
+# BUSCADOR DE DIRECTORES
 @app.route("/buscador/directores", methods = ["POST"])
 def buscador_directores():
     datos_json = request.get_json()
@@ -225,6 +233,7 @@ def buscador_directores():
     return jsonify(resultado), HTTPStatus.OK
 
 # Implementar ABM de directores y generos
+# ALTA (A) DE DIRECTORES
 @app.route("/directores/agregar/nuevo", methods = ["POST"])
 def agregar_director():
     datos_json = request.get_json()
@@ -240,14 +249,14 @@ def agregar_director():
         
         with open("Proyecto Final/directores.json", "w", encoding = "utf-8") as archivo_directores:
                 json.dump(directores_data, archivo_directores, indent = 4)
-            
-        #modificar el printeo para que se vea mejor por consola    
+               
         print("Se cargo el director nueva con exito.")
         return jsonify(nuevo_director["nombre_director"]), HTTPStatus.OK
     else:
         print("Error!. Director ya cargado en base da datos.")
         return jsonify("No es posible agregar ese director dado que ya se encuentra registrado en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
 
+# MODIFICACION (M) DE DIRECTORES
 @app.route("/directores/editar/<id>", methods = ["PUT"])
 def editar_director(id):
     datos_json = request.get_json()
@@ -257,7 +266,7 @@ def editar_director(id):
     if director_editar:
         print("Director encontrado.")
         
-        nombre = datos_json["nombre_director"] or director_editar["nombre_director"]
+        nombre = datos_json["nombre_director"]
         
         for pelicula in peliculas_data[0]["peliculas"]:
             if (pelicula["director"] == director_editar["nombre_director"]): 
@@ -277,40 +286,133 @@ def editar_director(id):
     else:
         print("Error!. Director no encontrado.")
         return jsonify("No se encontro el director con el ID especificado."), HTTPStatus.NOT_FOUND
+
+# BAJA (B) DE DIRECTORES
+@app.route("/directores/eliminar/<id>", methods = ["DELETE"])
+def eliminar_director(id):
+    director_eliminar = next((dire for dire in directores_data[0]["directores"] if dire["id_director"] == int(id)), None)
+    
+    if director_eliminar:
+        print("Director encontrado.")
         
+        for pelicula in peliculas_data[0]["peliculas"]:
+            if (pelicula["director"] == director_eliminar["nombre_director"]):
+                pelicula["director"] = "Desconocido"
+                print("Eliminado aca tambien!!!")
+        
+        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+            json.dump(peliculas_data, archivo_peliculas, indent = 4)
+            
+        directores_data[0]["directores"].remove(director_eliminar)
+        
+        with open("Proyecto Final/directores.json", "w", encoding = "utf-8") as archivo_directores:
+            json.dump(directores_data, archivo_directores, indent = 4)
+        
+        print("El director ha sido eliminado correctamente.")
+        return jsonify(director_eliminar["nombre_director"]), HTTPStatus.OK
+    else:
+        print("Error!. Director no encontrado.")
+        return jsonify("No se encontro el director con el ID especificado."), HTTPStatus.NOT_FOUND
+
+# ALTA (A) DE GENEROS    
+@app.route("/peliculas/generos/agregar/nuevo", methods = ["POST"])
+def agregar_genero():
+    datos_json = request.get_json()
+    
+    if (existe_genero(datos_json["nombre_genero"]) == False):      
+        id_genero = len(peliculas_data[1]["generos"]) + 1
+        nuevo_genero = {
+            "nombre_genero":datos_json["nombre_genero"],
+            "id_genero":id_genero
+        }
+        
+        peliculas_data[1]["generos"].append(nuevo_genero)
+        
+        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+                json.dump(peliculas_data, archivo_peliculas, indent = 4)
+               
+        print("Se cargo el genero nuevo con exito.")
+        return jsonify(nuevo_genero["nombre_genero"]), HTTPStatus.OK
+    else:
+        print("Error!. Genero ya cargado en base da datos.")
+        return jsonify("No es posible agregar ese genero dado que ya se encuentra registrado en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
+
+# MODIFICACION (M) DE GENEROS        
+@app.route("/peliculas/generos/editar/<id>", methods = ["PUT"])
+def editar_genero(id):
+    datos_json = request.get_json()
+    
+    genero_editar = next((genero for genero in peliculas_data[1]["generos"] if genero["id_genero"] == int(id)), None)
+    
+    if genero_editar:
+        print("Genero encontrado.")
+        
+        nombre = datos_json["nombre_genero"]
+        
+        for pelicula in peliculas_data[0]["peliculas"]:
+            if (pelicula["genero"] == genero_editar["nombre_genero"]): 
+                pelicula["genero"] =  nombre
+                print("modificado aca tambien!!!")
+
+        genero_editar["nombre_genero"] = nombre
+                
+        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+            json.dump(peliculas_data, archivo_peliculas, indent = 4)
+        
+        print("El genero ha sido editado correctamente.")
+        return jsonify(genero_editar["nombre_genero"]), HTTPStatus.OK
+    else:
+        print("Error!. Genero no encontrado.")
+        return jsonify("No se encontro el genero con el ID especificado."), HTTPStatus.NOT_FOUND
+    
+# BAJA (B) DE GENEROS
+@app.route("/peliculas/generos/eliminar/<id>", methods = ["DELETE"])
+def eliminar_genero(id):
+    genero_eliminar = next((genero for genero in peliculas_data[1]["generos"] if genero["id_genero"] == int(id)), None)
+    
+    if genero_eliminar:
+        print("Genero encontrado.")
+        
+        for pelicula in peliculas_data[0]["peliculas"]:
+            if (pelicula["genero"] == genero_eliminar["nombre_genero"]):
+                pelicula["genero"] = "Desconocido"
+                print("Eliminado aca tambien!!!")
+            
+        peliculas_data[1]["generos"].remove(genero_eliminar)
+        
+        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+            json.dump(peliculas_data, archivo_peliculas, indent = 4)
+        
+        print("El genero ha sido eliminado correctamente.")
+        return jsonify(genero_eliminar["nombre_genero"]), HTTPStatus.OK
+    else:
+        print("Error!. Genero no encontrado.")
+        return jsonify("No se encontro el genero con el ID especificado."), HTTPStatus.NOT_FOUND
+
 if __name__ == "__main__":
     app.run(debug = True)  
 
 print("-----------------------------------------------")
 print("BIENVENIDO AL SISTEMA DE PELICULAS 'FILM QUEST'")
 print("-----------------------------------------------")
-login = input("¿Ya estas registrado? Inicia sesion para acceder [Si - No]: ").lower()
-while (login != "si" and login != "no"):
-    login = input("¿Ya estas registrado? Inicia sesion para acceder [Si - No]: ").lower()
-if (login == "no"):
-    #El programa tendra un modulo publico, es decir, una pantalla que puede ser accedida sin necesidad de tener cuenta ni estar logueado
-    #En esa pantalla se mostraran las ultimas 10 peliculas agregadas al sistema independientemente del usuario
-    print("Usted solo puede acceder al modulo publico ya que no esta logueado en el sistema.")
-    print("A continuacion se mostraran las ultimas 10 peliculas agregadas al sistema:\n")
-    mostrar_peliculas(peliculas_data[0]["peliculas"])     
-    print("\nGracias por utilizar el sistema, hasta la proxima!")
-else:
-    username = input("Ingrese nombre de usuario: ")
-    password = input ("Ingrese su contraseña: ")
-    usuario = next((usuario for usuario in usuarios_data[0]["usuarios"] if usuario["user"] == username and usuario["password"] == password), None)
+
+username = input("INGRESE NOMBRE DE USUARIO: ")
+password = input ("INGRESE SU CONTRASEÑA: ")
+usuario = next((usuario for usuario in usuarios_data[0]["usuarios"] if usuario["user"] == username and usuario["password"] == password), None)
     
-    if usuario:
-        id_usuario = str(usuario["id"])
-        flag = True
-        print("¡Usuario encontrado en la base de datos!")
-        
+if usuario:
+    id_usuario = str(usuario["id"])
+    flag = True
+    print("¡Usuario encontrado en la base de datos!")
+    
+    if (usuario["permiso"] == "admin"):
         while(True):          
-            print("\n --- Menu de opciones ---")
-            print("1. Agregar pelicula")
-            print("2. Editar pelicula")
-            print("3. Eliminar pelicula")
-            print("4. Mostrar ultimas (10) peliculas")
-            print("5. Salir\n")
+            print("\n --- MENU DE OPCIONES ---")
+            print("1. AGREGAR PELICULA")
+            print("2. EDITAR PELICULA")
+            print("3. ELIMINAR PELICULA")
+            print("4. MOSTRAR ULTIMAS (10) PELICULAS")
+            print("5. SALIR\n")
             
             opcion = int(input("Ingrese una opcion: "))
             
@@ -329,6 +431,13 @@ else:
                 print("Gracias por utilizar el sistema. Hasta luego!")
                 exit(0)
             else:
-                print("Opcion invalida. Intente nuevamente.")        
+                print("Opcion invalida. Intente nuevamente.") 
     else:
-        print("Error, el usuario no fue encontrado en la base de datos.")        
+        #El programa tendra un modulo publico, es decir, una pantalla que puede ser accedida sin necesidad de tener cuenta ni estar logueado
+        #En esa pantalla se mostraran las ultimas 10 peliculas agregadas al sistema independientemente del usuario
+        print("Usted solo puede acceder al modulo publico ya que no esta logueado en el sistema o no tiene los permisos necesarios para acceder al modulo privado.")
+        print("A continuacion se mostraran las ultimas 10 peliculas agregadas al sistema:\n")
+        mostrar_peliculas(peliculas_data[0]["peliculas"])     
+        print("\nGracias por utilizar el sistema, hasta la proxima!")       
+else:
+    print("Error, el usuario no fue encontrado en la base de datos.")        

@@ -4,27 +4,32 @@
         {
             "id":1,
             "user":"MatiasDupont",
-            "password":"1234"
+            "password":"1234",
+            "permiso":"admin"
         },
         {
             "id":2,
             "user":"MauroTorre",
-            "password":"1234"
+            "password":"1234",
+            "permiso":"admin"
         },
         {
             "id":3,
             "user":"MarcoUstarroz",
-            "password":"1234"
+            "password":"1234",
+            "permiso":"admin"
         },
         {
             "id":4,
             "user":"GuillermoReggiani",
-            "password":"1234"
+            "password":"1234",
+            "permiso":"admin"
         },
         {
             "id":5,
             "user":"JavierBalmaceda",
-            "password":"1234"
+            "password":"1234",
+            "permiso":"admin"
         }
     ]       
     }
