@@ -3,6 +3,7 @@
 from flask import Flask, jsonify, Response, request
 from http import HTTPStatus
 import json
+import subprocess
 
 app = Flask(__name__)
 
@@ -15,7 +16,8 @@ with open("Proyecto Final/peliculas.json", encoding = "utf-8") as archivo_pelicu
 with open("Proyecto Final/directores.json", encoding = "utf-8") as archivo_directores:
     directores_data = json.load(archivo_directores)
     
-flag = False
+with open("Proyecto Final/usuarios.json", encoding = "utf-8") as archivo_usuarios:
+    usuarios_data = json.load(archivo_usuarios) 
 
 def mostrar_peliculas(peliculas):
     for pelicula in peliculas[-10:]:
@@ -50,6 +52,13 @@ def existe_genero(genero):
     else:
         return False
     
+def existe_usuario(nombre):
+    nombre_usuario = next((usuario for usuario in usuarios_data[0]["usuarios"] if usuario["user"] == nombre), None)
+    if nombre_usuario:
+        return True
+    else:
+        return False
+        
 def buscar_peliculas(dato):
     resultados = []
     for pelicula in peliculas_data[0]["peliculas"]:
@@ -66,6 +75,7 @@ def buscar_directores(dato):
     
 #Ademas, el sistema debera proveer servicios web a traves de endpoints para ser consultados por otros sistemas y devolver un documento de formato JSON.
 #Los servicios que se necesitan son:
+# Ruta de inicio
 @app.route("/", methods = ["GET"])
 def home():
     return "Bienvenido al sistema de peliculas 'Film Quest"
@@ -104,6 +114,7 @@ def devolver_peliculas_con_imagen():
     return jsonify(peliculas_imagen), HTTPStatus.OK
 
 # 5. ABM de cada pelicula
+# ALTA (A) DE PELICULAS
 @app.route("/peliculas/agregar/nueva", methods = ["POST"])
 def agregar_pelicula():
     datos_json = request.get_json()
@@ -141,9 +152,11 @@ def agregar_pelicula():
             print("Se cargo la pelicula nueva con exito.")
             return jsonify(nueva_pelicula["titulo"]), HTTPStatus.OK
         else:
-            print("Error!. Pelicula ya cargada en base da datos.")
+            print("Error!. Pelicula ya cargada en base de datos.")
             return jsonify("No es posible agregar esa pelicula dado que ya se encuentra registrada en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
-           
+
+# MODIFICACION (M) DE PELICULAS 
+# Un usuario puede editar la informacion de una pelicula ya cargada, pero no puede borrar ni editar comentarios de otros usuarios          
 @app.route("/peliculas/editar/<id>", methods = ["PUT"])
 def editar_pelicula(id):
     datos_json = request.get_json()
@@ -153,32 +166,38 @@ def editar_pelicula(id):
     if pelicula_editar:
         print("Pelicula encontrada.")
         
-        titulo = datos_json["titulo"] or pelicula_editar["titulo"]
-        anio = datos_json["anio"] or pelicula_editar["anio"]
-        director = datos_json["director"] or pelicula_editar["director"]
-        genero = datos_json["genero"] or pelicula_editar["genero"]
-        sinopsis = datos_json["sinopsis"] or pelicula_editar["sinopsis"]
-        imagen = datos_json["link"] or pelicula_editar["link"]
-        comentarios = datos_json["comentarios"] or pelicula_editar["comentarios"]
-        
-        pelicula_editar["id"] = id
-        pelicula_editar["titulo"] = titulo
-        pelicula_editar["anio"] = anio
-        pelicula_editar["director"] = director
-        pelicula_editar["genero"] = genero
-        pelicula_editar["sinopsis"] = sinopsis
-        pelicula_editar["link"] = imagen
-        pelicula_editar["comentarios"] = comentarios
-        
-        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
-            json.dump(peliculas_data, archivo_peliculas, indent = 4)
-        
-        print("La pelicula ha sido editada correctamente.")
-        return jsonify(pelicula_editar["titulo"]), HTTPStatus.OK
+        if (existe_pelicula(datos_json["titulo"]) == False):
+            titulo = datos_json["titulo"] 
+            anio = datos_json["anio"] 
+            director = datos_json["director"] 
+            genero = datos_json["genero"] 
+            sinopsis = datos_json["sinopsis"] 
+            imagen = datos_json["link"] 
+            comentarios = datos_json["comentarios"] 
+            
+            pelicula_editar["id"] = id
+            pelicula_editar["titulo"] = titulo
+            pelicula_editar["anio"] = anio
+            pelicula_editar["director"] = director
+            pelicula_editar["genero"] = genero
+            pelicula_editar["sinopsis"] = sinopsis
+            pelicula_editar["link"] = imagen
+            pelicula_editar["comentarios"] = comentarios
+            
+            with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+                json.dump(peliculas_data, archivo_peliculas, indent = 4)
+            
+            print("La pelicula ha sido editada correctamente.")
+            return jsonify(pelicula_editar["titulo"]), HTTPStatus.OK
+        else:
+            print("Error al guardar los cambios!. Nombre de pelicula ya registrado.")
+            return jsonify("No es posible modificar el nombre de la pelicula dado que ya se encuentra en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
     else:
         print("Error!. Pelicula no encontrada.")
         return jsonify("No se encontro la pelicula con el ID especificado."), HTTPStatus.NOT_FOUND
-        
+
+# BAJA (B) DE PELICULAS   
+# Un usuario puede eliminar una pelicula solo si esta no tiene comentarios de otros usuarios   
 @app.route("/peliculas/eliminar/<id>", methods = ["DELETE"])
 def eliminar_pelicula(id):
     peliculas_eliminar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["id"] == int(id)), None)
@@ -253,7 +272,7 @@ def agregar_director():
         print("Se cargo el director nueva con exito.")
         return jsonify(nuevo_director["nombre_director"]), HTTPStatus.OK
     else:
-        print("Error!. Director ya cargado en base da datos.")
+        print("Error!. Director ya cargado en base de datos.")
         return jsonify("No es posible agregar ese director dado que ya se encuentra registrado en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
 
 # MODIFICACION (M) DE DIRECTORES
@@ -334,7 +353,7 @@ def agregar_genero():
         print("Se cargo el genero nuevo con exito.")
         return jsonify(nuevo_genero["nombre_genero"]), HTTPStatus.OK
     else:
-        print("Error!. Genero ya cargado en base da datos.")
+        print("Error!. Genero ya cargado en base de datos.")
         return jsonify("No es posible agregar ese genero dado que ya se encuentra registrado en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
 
 # MODIFICACION (M) DE GENEROS        
@@ -389,55 +408,181 @@ def eliminar_genero(id):
         print("Error!. Genero no encontrado.")
         return jsonify("No se encontro el genero con el ID especificado."), HTTPStatus.NOT_FOUND
 
-if __name__ == "__main__":
-    app.run(debug = True)  
-
-print("-----------------------------------------------")
-print("BIENVENIDO AL SISTEMA DE PELICULAS 'FILM QUEST'")
-print("-----------------------------------------------")
-
-username = input("INGRESE NOMBRE DE USUARIO: ")
-password = input ("INGRESE SU CONTRASEÑA: ")
-usuario = next((usuario for usuario in usuarios_data[0]["usuarios"] if usuario["user"] == username and usuario["password"] == password), None)
+# ALTA (A) DE USUARIOS
+@app.route("/usuarios/agregar/nuevo", methods = ["POST"])
+def agregar_usuario():
+    datos_json = request.get_json()
     
-if usuario:
-    id_usuario = str(usuario["id"])
-    flag = True
-    print("¡Usuario encontrado en la base de datos!")
-    
-    if (usuario["permiso"] == "admin"):
-        while(True):          
-            print("\n --- MENU DE OPCIONES ---")
-            print("1. AGREGAR PELICULA")
-            print("2. EDITAR PELICULA")
-            print("3. ELIMINAR PELICULA")
-            print("4. MOSTRAR ULTIMAS (10) PELICULAS")
-            print("5. SALIR\n")
-            
-            opcion = int(input("Ingrese una opcion: "))
-            
-            if (opcion == 1):
-                with app.test_client() as client:
-                    client.post("/peliculas/agregar/nueva")
-            elif (opcion == 2):
-                with app.test_client() as client:
-                    client.put("/peliculas/editar/<id>")
-            elif (opcion == 3):
-                with app.test_client() as client:
-                    client.delete("/peliculas/eliminar/<id>")
-            elif (opcion == 4):
-                mostrar_peliculas(peliculas_data[0]["peliculas"])
-            elif (opcion == 5):
-                print("Gracias por utilizar el sistema. Hasta luego!")
-                exit(0)
-            else:
-                print("Opcion invalida. Intente nuevamente.") 
+    if (existe_usuario(datos_json["user"]) == False):
+        id_usuario = len(usuarios_data[0]["usuarios"]) + 1
+        nuevo_usuario = {
+            "id":id_usuario,
+            "user":datos_json["user"],
+            "password":datos_json["password"],
+            "permiso":datos_json["permiso"]
+        }
+        
+        usuarios_data[0]["usuarios"].append(nuevo_usuario)
+        
+        with open("Proyecto Final/usuarios.json", "w", encoding = "utf-8") as archivo_usuarios:
+            json.dump(usuarios_data, archivo_usuarios, indent = 4)
+        
+        print("Se cargo el usuario nuevo con exito.")
+        return jsonify(nuevo_usuario["user"]), HTTPStatus.OK
     else:
-        #El programa tendra un modulo publico, es decir, una pantalla que puede ser accedida sin necesidad de tener cuenta ni estar logueado
-        #En esa pantalla se mostraran las ultimas 10 peliculas agregadas al sistema independientemente del usuario
-        print("Usted solo puede acceder al modulo publico ya que no esta logueado en el sistema o no tiene los permisos necesarios para acceder al modulo privado.")
-        print("A continuacion se mostraran las ultimas 10 peliculas agregadas al sistema:\n")
-        mostrar_peliculas(peliculas_data[0]["peliculas"])     
-        print("\nGracias por utilizar el sistema, hasta la proxima!")       
-else:
-    print("Error, el usuario no fue encontrado en la base de datos.")        
+        print("Error!. Usuario ya cargado en base de datos.")
+        return jsonify("No es posible agregar ese usuario dado que ya se encuentra registrado en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
+    
+# MODIFICACION (M) DE USUARIOS
+@app.route("/usuarios/editar/<id>", methods = ["PUT"])
+def editar_usuario(id):
+    datos_json = request.get_json()
+    
+    usuario_editar = next((usuario for usuario in usuarios_data[0]["usuarios"] if usuario["id"] == int(id)), None)
+
+    if usuario_editar:
+        print("Usuario encontrado.")
+        
+        if (existe_usuario(datos_json[datos_json["user"]]) == False):
+            usuario = datos_json["user"]
+            contrasenia = datos_json["password"]
+            permiso = datos_json["permiso"]
+            
+            usuario_editar["id"] = id
+            usuario_editar["user"] = usuario
+            usuario_editar["password"] = contrasenia
+            usuario_editar["permiso"] = permiso
+            
+            with open("Proyecto Final/usuarios.json", "w", encoding = "utf-8") as archivo_usuarios:
+                json.dump(usuarios_data, archivo_usuarios, indent = 4)
+        
+            print("El usuario ha sido editado correctamente.")
+            return jsonify(usuario_editar["user"]), HTTPStatus.OK
+        else:
+            print("Error al guardar los cambios!. Nombre de usuario ya registrado.")
+            return jsonify("No es posible modificar el nombre de usuario dado que ya se encuentra en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
+    else:
+        print("Error!. Usuario no encontrado.")
+        return jsonify("No se encontro el usuario con el ID especificado."), HTTPStatus.NOT_FOUND
+    
+# BAJA (B) DE USUARIOS
+@app.route("/usuarios/eliminar/<id>", methods = ["DELETE"])
+def eliminar_usuario(id):
+    usuario_eliminar = next((usuario for usuario in usuarios_data[0]["usuarios"] if usuario["id"] == int(id)), None)
+
+    if usuario_eliminar:
+        print("Usuario encontrado.")
+        
+        if (usuario_eliminar["permiso"] == "public"):
+            usuarios_data[0]["usuarios"].remove(usuario_eliminar)
+            
+            with open("Proyecto Final/usuarios.json", "w", encoding = "utf-8") as archivo_usuarios:
+                json.dump(usuarios_data, archivo_usuarios, indent = 4)
+        
+            print("El usuario ha sido eliminado correctamente.")
+            return jsonify(usuario_eliminar["user"]), HTTPStatus.OK
+        else:
+            print("Error de solicitud!. No es posible eliminar a un usuario con permiso admin")
+            return jsonify("No es posible eliminar a un usuario con permiso admin."), HTTPStatus.BAD_REQUEST
+    else:
+        print("Error!. Usuario no encontrado.")
+        return jsonify("No se encontro el usuario con el ID especificado."), HTTPStatus.NOT_FOUND
+    
+# ASIGNAR PERMISOS DE ADMINISTRADOR O USUARIO PUBLICO
+@app.route("/usuarios/permisos/<id>", methods = ["PUT"])
+def asignar_permisos(id):
+    datos_json = request.get_json()
+    
+    usuario = next((user for user in usuarios_data[0]["usuarios"] if user["id"] == int(id)), None)
+    
+    if usuario:
+        print("Usuario encontrado.")
+        
+        if (datos_json["permiso"] == "admin"):
+            usuario["permiso"] = "admin"
+        else:
+            usuario["permiso"] = "public"
+        
+        with open("Proyecto Final/usuarios.json", "w", encoding = "utf-8") as archivo_usuarios:
+            json.dump(usuarios_data, archivo_usuarios, indent = 4)
+        
+        print("El permiso de usuario ha sido modificado correctamente.")
+        return jsonify(usuario["permiso"]), HTTPStatus.OK
+    else:
+        print("Error!. Usuario no encontrado.")
+        return jsonify("No se encontro el usuario con el ID especificado."), HTTPStatus.NOT_FOUND
+
+def mostrar_menu():
+    print("\n --- MENU DE OPCIONES ---")
+    print("1. AGREGAR PELICULA")
+    print("2. EDITAR PELICULA")
+    print("3. ELIMINAR PELICULA")
+    print("4. SALIR\n")
+    
+    opcion = int(input("Ingrese una opcion: "))
+    
+    return opcion
+
+def main():
+    print("-----------------------------------------------")
+    print("BIENVENIDO AL SISTEMA DE PELICULAS 'FILM QUEST'")
+    print("-----------------------------------------------")
+
+    # El programa debe permitir a un usuario ingresar usuario y contraseña para ingresar al mismo
+    username = input("INGRESE NOMBRE DE USUARIO: ")
+    password = input ("INGRESE SU CONTRASEÑA: ")
+    print()
+    usuario = next((usuario for usuario in usuarios_data[0]["usuarios"] if usuario["user"] == username and usuario["password"] == password), None)
+    
+    if usuario:
+        id_usuario = str(usuario["id"])
+        print("¡Usuario encontrado en la base de datos!")
+        
+        if (usuario["permiso"] == "admin"):
+            while(True):          
+                opcion = mostrar_menu()
+                
+                if (opcion == 1):
+                    postman_path = "C:/Users/Usuario/Documents/Matias/PROGRA2 2023/Postman/Postman-win64-Setup.exe"
+                    collection_uid = "<bf934137-5e4f-4804-83e7-2b007cefcfa6>"
+                    action = "openRequest"
+                    request_uid = "<24275799-deb8045e-8cdc-402a-a023-f78167e96ae7>"
+    
+                    url = f"postman://run/{collection_uid}?action={action}&uid={request_uid}"
+                    subprocess.run([postman_path, url])
+                    app.run(debug = True)
+                elif (opcion == 2):
+                    postman_path = "C:/Users/Usuario/Documents/Matias/PROGRA2 2023/Postman/Postman-win64-Setup.exe"
+                    collection_uid = "<bf934137-5e4f-4804-83e7-2b007cefcfa6>"
+                    action = "openRequest"
+                    request_uid = "<24275799-2e49f5d7-e2d8-4ad5-8093-27e3931f81bf>"
+                    
+                    url = f"postman://run/{collection_uid}?action={action}&uid={request_uid}"
+                    subprocess.run([postman_path, url])
+                    app.run(debug = True)
+                elif (opcion == 3):
+                    postman_path = "C:/Users/Usuario/Documents/Matias/PROGRA2 2023/Postman/Postman-win64-Setup.exe"
+                    collection_uid = "bf934137-5e4f-4804-83e7-2b007cefcfa6"
+                    action = "openRequest"
+                    request_uid = "24275799-65583ea6-092e-4905-9729-fc1dacfd037b"
+                    
+                    url = f"postman://run/{collection_uid}?action={action}&uid={request_uid}"
+                    subprocess.run([postman_path, url])
+                    app.run(debug = True)
+                elif (opcion == 4):
+                    print("Gracias por utilizar el sistema. Hasta luego!")
+                    exit(0)
+                else:
+                    print("Opcion invalida. Intente nuevamente.") 
+        else:
+            #El programa tendra un modulo publico, es decir, una pantalla que puede ser accedida sin necesidad de tener cuenta ni estar logueado
+            #En esa pantalla se mostraran las ultimas 10 peliculas agregadas al sistema independientemente del usuario
+            print("Usted solo puede acceder al modulo publico ya que no esta logueado en el sistema o no tiene los permisos necesarios para acceder al modulo privado.")
+            print("A continuacion se mostraran las ultimas 10 peliculas agregadas al sistema:\n")
+            mostrar_peliculas(peliculas_data[0]["peliculas"])     
+            print("\nGracias por utilizar el sistema, hasta la proxima!")       
+    else:
+        print("Error, el usuario no fue encontrado en la base de datos.")      
+    
+if __name__ == "__main__":
+    main()  
