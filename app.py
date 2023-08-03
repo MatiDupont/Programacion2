@@ -4,9 +4,10 @@ from flask import Flask, jsonify, Response, request
 from http import HTTPStatus
 import json
 import subprocess
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 with open("Proyecto Final/usuarios.json", encoding = "utf-8") as archivo_usuarios:
     usuarios_data = json.load(archivo_usuarios)
 
@@ -21,14 +22,16 @@ with open("Proyecto Final/usuarios.json", encoding = "utf-8") as archivo_usuario
 
 def mostrar_peliculas(peliculas):
     for pelicula in peliculas[-10:]:
+        print("Id: " + str(pelicula["id"]))
         print("Titulo: " + pelicula["titulo"])
         print("Año: " + pelicula["anio"])
         print("Director: " + pelicula["director"])
         print("Genero: " + pelicula["genero"])
-        print("Sinopsis:" + pelicula["sinopsis"])
-        print("Imagen:" + pelicula["link"])
-        print("Comentarios:" + pelicula["comentarios"])
-        print("Alta:" + str(pelicula["alta"]))
+        print("Sinopsis: " + pelicula["sinopsis"])
+        print("Imagen: " + pelicula["link"])
+        print("Comentarios: " + pelicula["comentarios"])
+        print("Alta: " + str(pelicula["alta"]))
+        print("Puntuaciones: " + pelicula["puntuaciones"])
         print("---------------------------------")
             
 def existe_pelicula(titulo):
@@ -118,14 +121,15 @@ def devolver_peliculas_con_imagen():
 @app.route("/peliculas/agregar/nueva", methods = ["POST"])
 def agregar_pelicula():
     datos_json = request.get_json()
+    usuario_id = id_usuario
     print(datos_json)
     
     print(len(datos_json))
     
-    if(len(datos_json) < 7):
+    if(len(datos_json) < 8):
         print("Error!, faltan campos en el pedido.")
         exit(0)
-    elif(len(datos_json) > 7):
+    elif(len(datos_json) > 8):
         print("Error!, exceso de campos en el pedido.")
         exit(0)
     else: 
@@ -139,9 +143,16 @@ def agregar_pelicula():
             "genero":datos_json["genero"],
             "sinopsis":datos_json["sinopsis"],
             "link":datos_json["link"],
-            "comentarios":datos_json["comentarios"],
-            #la key de la value alta, la tengo que traer de donde llamo a la funcion
-            "alta": 1
+            "comentarios":{
+                "usuario_id": usuario_id,
+                "comentario": datos_json["comentarios"]
+                },
+            "alta": usuario_id,
+            "puntuaciones": {
+                "usuario_id": usuario_id,
+                "puntuacion": datos_json["puntuaciones"]
+            },
+            "contador": 0
             }
         
             peliculas_data[0]["peliculas"].append(nueva_pelicula)
@@ -160,6 +171,7 @@ def agregar_pelicula():
 @app.route("/peliculas/editar/<id>", methods = ["PUT"])
 def editar_pelicula(id):
     datos_json = request.get_json()
+    usuario_id = id_usuario
     
     pelicula_editar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["id"] == int(id)), None)
     
@@ -173,9 +185,11 @@ def editar_pelicula(id):
             genero = datos_json["genero"] 
             sinopsis = datos_json["sinopsis"] 
             imagen = datos_json["link"] 
-            comentarios = datos_json["comentarios"] 
+            comentario = next((coment for coment in pelicula_editar["comentarios"] if coment["usuario_id"] == usuario_id), None)
+            if comentario:
+                comentarios = datos_json["comentarios"]["comentario"] 
             
-            pelicula_editar["id"] = id
+            #pelicula_editar["id"] = id
             pelicula_editar["titulo"] = titulo
             pelicula_editar["anio"] = anio
             pelicula_editar["director"] = director
@@ -200,10 +214,15 @@ def editar_pelicula(id):
 # Un usuario puede eliminar una pelicula solo si esta no tiene comentarios de otros usuarios   
 @app.route("/peliculas/eliminar/<id>", methods = ["DELETE"])
 def eliminar_pelicula(id):
+    usuario_id = id_usuario
     peliculas_eliminar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["id"] == int(id)), None)
     
     if peliculas_eliminar:
-        if (peliculas_eliminar["comentarios"] != ""):
+        comentarios = next((comentario for comentario in peliculas_eliminar["comentarios"] if comentario["usuario_id"] != usuario_id), None)
+        if comentarios:
+            print("Error!. Pelicula con comentarios.")
+            return jsonify("Error!. No es posible eliminar la pelicula porque tiene comentarios hechos por otros usuarios."), HTTPStatus.BAD_REQUEST
+        else:
             peliculas_data[0]["peliculas"].remove(peliculas_eliminar)
             
             with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
@@ -211,9 +230,6 @@ def eliminar_pelicula(id):
                 
             print("La pelicula ha sido eliminada correctamente.")
             return jsonify(peliculas_eliminar["titulo"]), HTTPStatus.OK
-        else:
-            print("Error!. Pelicula con comentarios.")
-            return jsonify("No se puede eliminar la pelicula porque tiene comentarios de otros usuarios."), HTTPStatus.BAD_REQUEST
     else:
         print("Error!. Pelicula no encontrada.")
         return jsonify("No se encontro la pelicula con el ID especificado."), HTTPStatus.NOT_FOUND
@@ -511,7 +527,119 @@ def asignar_permisos(id):
     else:
         print("Error!. Usuario no encontrado.")
         return jsonify("No se encontro el usuario con el ID especificado."), HTTPStatus.NOT_FOUND
+    
+# ACTUALIZACION DE PUNTUACION DE PELICULA
+def agregar_puntuacion_pelicula(nombre, puntuacion):
+    for pelicula in peliculas_data[0]["peliculas"]:
+        if pelicula["titulo"] == nombre:
+            pelicula["puntuacion_total"] += puntuacion
+            pelicula["total_votos"] += 1
+            pelicula["puntuacion_promedio"] = pelicula["puntuacion_total"] / pelicula["total_votos"]
+            return True
+    return False
 
+# IMPLEMENTAR UN SISTEMA DE PUNTUACION DE PELICULAS ESTILO IMDB CON SUS RESPECTIVO ABM
+# ALTA (A) DE PUNTUACIONES
+@app.route("/peliculas/puntuacion/agregar", methods = ["POST"])
+def agregar_puntuacion():
+    datos_json = request.get_json()
+    usuario_id = id_usuario
+    
+    pelicula = next((peli for peli in peliculas_data[0]["peliculas"] if peli["titulo"] == datos_json["titulo"]), None)
+    
+    if pelicula:
+        if pelicula["puntuaciones"]["usuario_id"] == usuario_id:
+            print("Error!. Usted no puede agregar una puntuacion numerica ya que ya ha puntuado esta pelicula.")
+            return jsonify("Error!. Usted ya ha agregado una puntuacion anteriormente a esta pelicula.")
+        else:
+            pelicula["puntuaciones"].append({
+                "usuario_id": usuario_id,
+                "puntuacion": datos_json["puntuacion"]})
+            
+            with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+                json.dump(peliculas_data, archivo_peliculas, indent = 4)
+            
+            print("La puntuacion se realizo con exito.")
+            return jsonify(pelicula), HTTPStatus.OK    
+    else:
+        return jsonify("No se encontro una pelicula con ese nombre en la base de datos del sistema."), HTTPStatus.NOT_FOUND    
+
+# MODIFICACION (M) DE PUNTUACIONES
+@app.route("/peliculas/puntuaciones/editar", methods = ["PUT"])
+def modificar_puntuacion():
+    datos_json = request.get_json()
+    usuario_id = id_usuario
+    
+    pelicula = existe_pelicula(datos_json["titulo"])
+    
+    if pelicula:
+        puntuacion_editar = next((puntuacion for puntuacion in pelicula["puntuaciones"] if puntuacion["usuario_id"] == usuario_id), None)
+        
+        if puntuacion_editar:
+            puntuacion_editar["puntuacion"] = datos_json["puntuacion"]
+            
+            with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+                json.dump(peliculas_data, archivo_peliculas, indent = 4)  
+            
+            return jsonify(puntuacion_editar), HTTPStatus.OK
+        else:
+            return jsonify("No se encontro la puntuacion del usuario para esta pelicula."), HTTPStatus.NOT_FOUND  
+    else:
+        return jsonify("Pelicula no encontrada."), HTTPStatus.NOT_FOUND
+    
+# BAJA (B) DE PUNTUACIONES
+@app.route("/peliculas/puntuaciones/eliminar", methods = ["DELETE"])
+def eliminar_puntuacion():
+    datos_json = request.get_json()
+    usuario_id = id_usuario
+    
+    pelicula = existe_pelicula(datos_json["titulo"])
+    
+    if pelicula: 
+        puntuacion_eliminar = next((puntuacion for puntuacion in pelicula["puntuaciones"] if puntuacion["usuario_id"] == usuario_id), None)
+        
+        if puntuacion_eliminar:
+            pelicula["puntuaciones"].remove(puntuacion_eliminar)
+            
+            with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+                json.dump(peliculas_data, archivo_peliculas, indent = 4)
+
+            return jsonify(puntuacion_eliminar), HTTPStatus.OK
+        else:
+            return jsonify("No se encontro la puntuacion del usuario para esta pelicula."), HTTPStatus.NOT_FOUND
+    else:
+        return jsonify("Pelicula no encontrada."), HTTPStatus.NOT_FOUND
+    
+# CONTADOR DE VISUALIZACIONES
+# Implementar un contador de visualizaciones para saber la cantidad de veces que se visualizaron los datos de la misma, el valor de este contador debe mantenerse aunque se reinicie la app.
+@app.route("/peliculas/<nombre>", methods = ["GET"])
+def obtener_pelicula(nombre):
+    pelicula = existe_pelicula(nombre)
+    
+    if pelicula:
+        pelicula["contador"] += 1
+        
+        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+            json.dump(peliculas_data, archivo_peliculas, indent = 4)
+        
+        return jsonify(pelicula), HTTPStatus.OK
+    else:
+        return jsonify("No se encontro la pelicula con el ID especificado."), HTTPStatus.NOT_FOUND
+    
+# PAGINADO
+# Implementar paginado. Si la cantidad de elementos a mostrar por una pantalla es demasiada, mostrar un subconjunto y brindar la posibilidad de moverse a otra pantalla.
+@app.route("/peliculas/<pagina>", methods = ["GET"])
+def obtener_peliculas_paginadas(pagina):
+    elementos_por_pagina = 3
+    
+    inicio = (pagina - 1) * elementos_por_pagina
+    fin = inicio + elementos_por_pagina
+    
+    peliculas_paginadas = peliculas_data[0]["peliculas"][inicio:fin]
+    
+    return jsonify(peliculas_paginadas), HTTPStatus.OK
+
+    
 def mostrar_menu():
     print("\n --- MENU DE OPCIONES ---")
     print("1. AGREGAR PELICULA")
@@ -534,8 +662,10 @@ def main():
     print()
     usuario = next((usuario for usuario in usuarios_data[0]["usuarios"] if usuario["user"] == username and usuario["password"] == password), None)
     
+    global id_usuario
     if usuario:
-        id_usuario = str(usuario["id"])
+        id_usuario = usuario["id"]
+        print(id_usuario)
         print("¡Usuario encontrado en la base de datos!")
         
         if (usuario["permiso"] == "admin"):
@@ -543,32 +673,11 @@ def main():
                 opcion = mostrar_menu()
                 
                 if (opcion == 1):
-                    postman_path = "C:/Users/Usuario/Documents/Matias/PROGRA2 2023/Postman/Postman-win64-Setup.exe"
-                    collection_uid = "<bf934137-5e4f-4804-83e7-2b007cefcfa6>"
-                    action = "openRequest"
-                    request_uid = "<24275799-deb8045e-8cdc-402a-a023-f78167e96ae7>"
-    
-                    url = f"postman://run/{collection_uid}?action={action}&uid={request_uid}"
-                    subprocess.run([postman_path, url])
-                    app.run(debug = True)
+                    print("agregar pelicula")
                 elif (opcion == 2):
-                    postman_path = "C:/Users/Usuario/Documents/Matias/PROGRA2 2023/Postman/Postman-win64-Setup.exe"
-                    collection_uid = "<bf934137-5e4f-4804-83e7-2b007cefcfa6>"
-                    action = "openRequest"
-                    request_uid = "<24275799-2e49f5d7-e2d8-4ad5-8093-27e3931f81bf>"
-                    
-                    url = f"postman://run/{collection_uid}?action={action}&uid={request_uid}"
-                    subprocess.run([postman_path, url])
-                    app.run(debug = True)
+                    print("editar pelicula")
                 elif (opcion == 3):
-                    postman_path = "C:/Users/Usuario/Documents/Matias/PROGRA2 2023/Postman/Postman-win64-Setup.exe"
-                    collection_uid = "bf934137-5e4f-4804-83e7-2b007cefcfa6"
-                    action = "openRequest"
-                    request_uid = "24275799-65583ea6-092e-4905-9729-fc1dacfd037b"
-                    
-                    url = f"postman://run/{collection_uid}?action={action}&uid={request_uid}"
-                    subprocess.run([postman_path, url])
-                    app.run(debug = True)
+                    print("eliminar pelicula")
                 elif (opcion == 4):
                     print("Gracias por utilizar el sistema. Hasta luego!")
                     exit(0)
@@ -585,4 +694,4 @@ def main():
         print("Error, el usuario no fue encontrado en la base de datos.")      
     
 if __name__ == "__main__":
-    main()  
+    app.run(debug=True)

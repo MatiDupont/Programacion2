@@ -1,86 +1,90 @@
 [
-    {"directores":
-    [
-        {
-            "id_director":1,
-            "nombre_director":"Steven Spielberg"
-        },
-        {
-            "id_director":2,
-            "nombre_director":"Martin Scorsese"
-        },
-        {
-            "id_director":3,
-            "nombre_director":"Christopher Nolan"
-        },
-        {
-            "id_director":4,
-            "nombre_director":"Quentin Tarantino"
-        },
-        {
-            "id_director":5,
-            "nombre_director":"Alfred Hitchcock"
-        },
-        {
-            "id_director":6,
-            "nombre_director":"Stanley Kubrick"
-        },
-        {
-            "id_director":7,
-            "nombre_director":"Francis Ford Coppola"
-        },
-        {
-            "id_director":8,
-            "nombre_director":"Ridley Scott"
-        },
-        {
-            "id_director":9,
-            "nombre_director":"James Cameron"
-        },
-        {
-            "id_director":10,
-            "nombre_director":"Pedro Almodóvar"
-        },
-        {
-            "id_director":11,
-            "nombre_director":"Frank Darabont"
-        },
-        {
-            "id_director":12,
-            "nombre_director":"Wes Anderson"
-        },
-        {
-            "id_director":13,
-            "nombre_director":"David Fincher"
-        },
-        {
-            "id_director":14,
-            "nombre_director":"Lana Wachowski"
-        },
-        {
-            "id_director":15,
-            "nombre_director":"Denis Villeneuve"
-        },
-        {
-            "id_director":16,
-            "nombre_director":"Damien Chazelle"
-        },
-        {
-            "id_director":17,
-            "nombre_director":"Sofia Coppola"
-        },
-        {
-            "id_director":18,
-            "nombre_director":"Clint Eastwood"
-        },
-        {
-            "id_director":19,
-            "nombre_director":"Ari Aster"
-        },
-        {
-            "id_director":20,
-            "nombre_director":"Tim Burton"
-        }
-    ]
+    {
+        "directores": [
+            {
+                "id_director": 1,
+                "nombre_director": "Steven Spielberg"
+            },
+            {
+                "id_director": 2,
+                "nombre_director": "Martin Scorsese"
+            },
+            {
+                "id_director": 3,
+                "nombre_director": "Christopher Nolan"
+            },
+            {
+                "id_director": 4,
+                "nombre_director": "Quentin Tarantino"
+            },
+            {
+                "id_director": 5,
+                "nombre_director": "Alfred Hitchcock"
+            },
+            {
+                "id_director": 6,
+                "nombre_director": "Stanley Kubrick"
+            },
+            {
+                "id_director": 7,
+                "nombre_director": "Francis Ford Coppola"
+            },
+            {
+                "id_director": 8,
+                "nombre_director": "Ridley Scott"
+            },
+            {
+                "id_director": 9,
+                "nombre_director": "James Cameron"
+            },
+            {
+                "id_director": 10,
+                "nombre_director": "Pedro Almodovar"
+            },
+            {
+                "id_director": 11,
+                "nombre_director": "Frank Darabont"
+            },
+            {
+                "id_director": 12,
+                "nombre_director": "Wes Anderson"
+            },
+            {
+                "id_director": 13,
+                "nombre_director": "David Fincher"
+            },
+            {
+                "id_director": 14,
+                "nombre_director": "Lana Wachowski"
+            },
+            {
+                "id_director": 15,
+                "nombre_director": "Denis Villeneuve"
+            },
+            {
+                "id_director": 16,
+                "nombre_director": "Damien Chazelle"
+            },
+            {
+                "id_director": 17,
+                "nombre_director": "Sofia Coppola"
+            },
+            {
+                "id_director": 18,
+                "nombre_director": "Clint Eastwood"
+            },
+            {
+                "id_director": 19,
+                "nombre_director": "Ari Aster"
+            },
+            {
+                "id_director": 20,
+                "nombre_director": "Tim Burton"
+            },
+            {
+                "id_director": 21,
+                "nombre_director": "Alejandro Mendoza"
+            }
+        ]
     }
 ]

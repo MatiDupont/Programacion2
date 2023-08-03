@@ -1,170 +1,266 @@
 [
-    {"peliculas":
-    [
-        {
-            "id":1,
-            "titulo":"Inception",
-            "anio":"2010",
-            "director":"Christopher Nolan",
-            "genero":"Ciencia Ficcion",
-            "sinopsis":"Dom Cobb (interpretado por Leonardo DiCaprio) es un talentoso ladrón de sueños que se especializa en la extracción de información valiosa del subconsciente de las personas mientras sueñan. Se le presenta la oportunidad de realizar una inserción, que consiste en implantar una idea en lugar de extraerla. Con un equipo de especialistas, Cobb se embarca en una peligrosa misión que desafía la realidad y pone en juego su propia cordura.",
-            "link":"https://www.dameocio.com/wp-content/uploads/2010/05/inception.jpg",
-            "comentarios":"Los efectos visuales en Inception son asombrosos. Las escenas de acción que se desarrollan en los sueños son espectaculares y desafían la gravedad. Los cambios de escenario y las transformaciones surrealistas crean un ambiente onírico que mantiene al espectador pegado a la pantalla en todo momento."
-        },
-        {
-            "id":2,
-            "titulo":"The Shawshank Redemption",
-            "anio":"1994",
-            "director":"Frank Darabont",
-            "genero":"Drama",
-            "sinopsis":"La película sigue la historia de Andy Dufresne (interpretado por Tim Robbins), un banquero condenado injustamente por el asesinato de su esposa e amante. Es enviado a la prisión de Shawshank, donde encuentra amistad y esperanza en medio de la brutalidad del sistema penitenciario. Con determinación y astucia, Andy trabaja para ganarse el respeto de los demás reclusos y encuentra una manera de mantener viva la esperanza de la libertad.",
-            "link":"https://pics.filmaffinity.com/Cadena_perpetua-576140557-large.jpg",
-            "comentarios":""
-        },
-        {
-            "id":3,
-            "titulo":"The Dark Knight",
-            "anio":"2008",
-            "director":"Christopher Nolan",
-            "genero":"Accion",
-            "sinopsis":"Batman (interpretado por Christian Bale) se enfrenta al Joker (interpretado por Heath Ledger), un despiadado criminal que desata el caos en Gotham City. Mientras Batman lucha por proteger la ciudad, se ve obligado a tomar decisiones difíciles que pondrán a prueba su moralidad y su identidad como defensor de la justicia.",
-            "link":"https://musicart.xboxlive.com/7/abb02f00-0000-0000-0000-000000000002/504/image.jpg?w=1920&h=1080",
-            "comentarios":"The Dark Knight es una obra maestra del género de superhéroes. Christopher Nolan logra crear una película oscura, intensa y emocionante que rompe con los convencionalismos y eleva el nivel del cine de superhéroes."
-        },
-        {
-            "id":4,
-            "titulo":"Interstellar",
-            "anio":"2014",
-            "director":"Christopher Nolan",
-            "genero":"Ciencia Ficcion",
-            "sinopsis":"En un futuro cercano, la humanidad se enfrenta a una crisis en la Tierra debido a la escasez de recursos. Un grupo de exploradores, liderado por el astronauta Cooper (interpretado por Matthew McConaughey), se embarca en un viaje interestelar en busca de un nuevo hogar para la humanidad. La película explora temas como el amor, la familia y la supervivencia en el vasto y desconocido espacio.",
-            "link":"https://s3.amazonaws.com/nightjarprod/content/uploads/sites/130/2021/08/19085635/gEU2QniE6E77NI6lCU6MxlNBvIx-scaled.jpg",
-            "comentarios":""
-        },
-        {
-            "id":5,
-            "titulo":"The Godfather",
-            "anio":"1972",
-            "director":"Francis Ford Coppola",
-            "genero":"Drama",
-            "sinopsis":"El padrino sigue la historia de la familia Corleone, una poderosa familia criminal italiana en Estados Unidos. La película se centra en Michael Corleone (interpretado por Al Pacino), quien se ve arrastrado al mundo del crimen organizado a medida que asume el papel de líder de la familia. Con una narrativa magistral, personajes icónicos y una exploración de temas como la lealtad, la violencia y el poder, El padrino es considerada una obra maestra del cine.",
-            "link":"https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg",
-            "comentarios":""
-        },
-        {
-            "id":6,
-            "titulo":"The Matrix",
-            "anio":"1999",
-            "director":"Lana Wachowski",
-            "genero":"Accion",
-            "sinopsis":"Matrix presenta un futuro distópico en el que los seres humanos viven en una realidad simulada mientras sus cuerpos son utilizados como fuente de energía por máquinas inteligentes. El programador de software Neo (interpretado por Keanu Reeves) descubre la verdad sobre la Matrix y se une a un grupo de rebeldes para luchar contra las máquinas y liberar a la humanidad.",
-            "link":"",
-            "comentarios":"Las actuaciones en The Matrix son sólidas y convincentes. Keanu Reeves interpreta magistralmente a Neo, el protagonista atrapado en una realidad simulada, y su transformación de un hombre común a un héroe es cautivadora. Laurence Fishburne y Carrie-Anne Moss también destacan en sus roles."
-        },
-        {
-            "id":7,
-            "titulo":"The Social Network",
-            "anio":"2010",
-            "director":"David Fincher",
-            "genero":"Drama",
-            "sinopsis":"La red social narra la historia de Mark Zuckerberg (interpretado por Jesse Eisenberg) y la creación de Facebook. La película muestra el ascenso meteórico de Zuckerberg como joven empresario y las complicaciones legales y personales que surgieron durante el proceso. Explora temas como la ambición, la traición y el impacto de las redes sociales en la sociedad.",
-            "link":"https://resizing.flixster.com/AfIG39mml5u9vsrAcBL3ubLdzHk=/206x305/v2/https://flxt.tmsimg.com/assets/p8078163_p_v8_ad.jpg",
-            "comentarios":"La partitura de Trent Reznor y Atticus Ross en The Social Network es un complemento perfecto para la película. Su música atmosférica y electrónica crea una sensación de tensión y emoción, sumergiéndonos aún más en la historia y añadiendo un elemento adicional al impacto emocional de la película."
-        },
-        {
-            "id":8,
-            "titulo":"The Grand Budapest Hotel",
-            "anio":"2014",
-            "director":"Wes Anderson",
-            "genero":"Comedia",
-            "sinopsis":"La película sigue las aventuras de Gustave H. (interpretado por Ralph Fiennes), el legendario conserje de un lujoso hotel europeo, y su fiel joven empleado Zero Moustafa. Ambientada en un periodo de entreguerras, la historia se despliega con humor excéntrico, personajes peculiares y una trama que involucra un robo, un asesinato y una valiosa herencia.",
-            "link":"https://m.media-amazon.com/images/M/MV5BMzM5NjUxOTEyMl5BMl5BanBnXkFtZTgwNjEyMDM0MDE@._V1_FMjpg_UX1000_.jpg",
-            "comentarios":"La dirección artística en The Grand Budapest Hotel es impecable. Cada escena está meticulosamente diseñada con una estética detallada y colorida que refleja la visión única de Wes Anderson. Cada cuadro es una obra de arte en sí misma, creando un mundo visualmente deslumbrante."
-        },
-        {
-            "id":9,
-            "titulo":"La La Land",
-            "anio":"2016",
-            "director":"Damien Chazelle",
-            "genero":"Musical",
-            "sinopsis":"La La Land cuenta la historia de Mia (interpretada por Emma Stone), una aspirante a actriz, y Sebastian (interpretado por Ryan Gosling), un talentoso pianista de jazz. Ambos se encuentran y se enamoran en Los Ángeles mientras luchan por perseguir sus sueños en la industria del entretenimiento. Con números musicales encantadores y una nostálgica oda a los musicales clásicos de Hollywood, la película captura el amor y los sacrificios en la búsqueda de la pasión artística.",
-            "link":"https://pics.filmaffinity.com/La_ciudad_de_las_estrellas_La_La_Land-262021831-mmed.jpg",
-            "comentarios":"Ryan Gosling y Emma Stone tienen una química cautivadora en La La Land. Su actuación es convincente y emotiva, logrando transmitir la pasión y la vulnerabilidad de sus personajes. Sus interpretaciones llenan de vida la pantalla y te hacen sentir cada emoción que experimentan."
-        },
-        {
-            "id":10,
-            "titulo":"Hereditary",
-            "anio":"2018",
-            "director":"Ari Aster",
-            "genero":"Terror",
-            "sinopsis":"Heredtary sigue la historia de la familia Graham, que comienza a experimentar fenómenos sobrenaturales después de la muerte de la abuela. Conforme los secretos oscuros de la familia se revelan, los miembros se ven envueltos en una espiral de horror y tragedia. La película se distingue por su atmósfera inquietante, actuaciones impactantes y giros inesperados, creando una experiencia terrorífica que se adentra en lo sobrenatural y lo psicológico.",
-            "link":"",
-            "comentarios":"Me quedé impresionado con la trama retorcida y perturbadora de 'Hereditary'. Cada escena está cuidadosamente construida para aumentar la tensión y el horror psicológico. Sin duda, una película que se quedará contigo mucho después de haberla visto."
-        }
-    ]
+    {
+        "peliculas": [
+            {
+                "id": 1,
+                "titulo": "Inception",
+                "anio": "2010",
+                "director": "Christopher Nolan",
+                "genero": "Ciencia Ficcion",
+                "sinopsis": "Dom Cobb (interpretado por Leonardo DiCaprio) es un talentoso ladron de suenios que se especializa en la extraccion de informacion valiosa del subconsciente de las personas mientras suenian. Se le presenta la oportunidad de realizar una insercion, que consiste en implantar una idea en lugar de extraerla. Con un equipo de especialistas, Cobb se embarca en una peligrosa mision que desafia la realidad y pone en juego su propia cordura.",
+                "link": "https://www.dameocio.com/wp-content/uploads/2010/05/inception.jpg",
+                "comentarios": [
+                    {
+                        "usuario_id": 1,
+                        "comentario": "Los efectos visuales en Inception son asombrosos. Las escenas de accion que se desarrollan en los suenios son espectaculares y desafian la gravedad. Los cambios de escenario y las transformaciones surrealistas crean un ambiente onirico que mantiene al espectador pegado a la pantalla en todo momento."
+                    }
+                ],
+                "alta": 1,
+                "puntuaciones":[
+                    {
+                        "usuario_id": 1,
+                        "puntuacion": 4
+                    },
+                    {
+                        "usuario_id": 5,
+                        "puntuacion": 10
+                    }
+                ],
+                "contador": 0
+            },
+            {
+                "id": 2,
+                "titulo": "The Shawshank Redemption",
+                "anio": "1994",
+                "director": "Frank Darabont",
+                "genero": "Drama",
+                "sinopsis": "La pelicula sigue la historia de Andy Dufresne (interpretado por Tim Robbins), un banquero condenado injustamente por el asesinato de su esposa e amante. Es enviado a la prision de Shawshank, donde encuentra amistad y esperanza en medio de la brutalidad del sistema penitenciario. Con determinacion y astucia, Andy trabaja para ganarse el respeto de los demas reclusos y encuentra una manera de mantener viva la esperanza de la libertad.",
+                "link": "https://pics.filmaffinity.com/Cadena_perpetua-576140557-large.jpg",
+                "comentarios": [],
+                "alta": 2,
+                "puntuaciones":[],
+                "contador": 0
+            },
+            {
+                "id": 3,
+                "titulo": "The Dark Knight",
+                "anio": "2008",
+                "director": "Christopher Nolan",
+                "genero": "Accion",
+                "sinopsis": "Batman (interpretado por Christian Bale) se enfrenta al Joker (interpretado por Heath Ledger), un despiadado criminal que desata el caos en Gotham City. Mientras Batman lucha por proteger la ciudad, se ve obligado a tomar decisiones dificiles que pondran a prueba su moralidad y su identidad como defensor de la justicia.",
+                "link": "https://musicart.xboxlive.com/7/abb02f00-0000-0000-0000-000000000002/504/image.jpg?w=1920&h=1080",
+                "comentarios": [
+                    {
+                        "usuario_id": 3,
+                        "comentario": "The Dark Knight es una obra maestra del genero de superheroes. Christopher Nolan logra crear una pelicula oscura, intensa y emocionante que rompe con los convencionalismos y eleva el nivel del cine de superheroes."
+                    }
+                ],
+                "alta": 3,
+                "puntuaciones":[],
+                "contador": 0
+            },
+            {
+                "id": 4,
+                "titulo": "Interstellar",
+                "anio": "2014",
+                "director": "Christopher Nolan",
+                "genero": "Ciencia Ficcion",
+                "sinopsis": "En un futuro cercano, la humanidad se enfrenta a una crisis en la Tierra debido a la escasez de recursos. Un grupo de exploradores, liderado por el astronauta Cooper (interpretado por Matthew McConaughey), se embarca en un viaje interestelar en busca de un nuevo hogar para la humanidad. La pel\u00edcula explora temas como el amor, la familia y la supervivencia en el vasto y desconocido espacio.",
+                "link": "https://s3.amazonaws.com/nightjarprod/content/uploads/sites/130/2021/08/19085635/gEU2QniE6E77NI6lCU6MxlNBvIx-scaled.jpg",
+                "comentarios": [],
+                "alta": 3,
+                "puntuaciones":[],
+                "contador": 0
+            },
+            {
+                "id": 5,
+                "titulo": "The Godfather",
+                "anio": "1972",
+                "director": "Francis Ford Coppola",
+                "genero": "Drama",
+                "sinopsis": "El padrino sigue la historia de la familia Corleone, una poderosa familia criminal italiana en Estados Unidos. La pelicula se centra en Michael Corleone (interpretado por Al Pacino), quien se ve arrastrado al mundo del crimen organizado a medida que asume el papel de lider de la familia. Con una narrativa magistral, personajes iconicos y una exploracion de temas como la lealtad, la violencia y el poder, El padrino es considerada una obra maestra del cine.",
+                "link": "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg",
+                "comentarios": [],
+                "alta": 4,
+                "puntuaciones":[],
+                "contador": 0
+            },
+            {
+                "id": 6,
+                "titulo": "The Matrix",
+                "anio": "1999",
+                "director": "Lana Wachowski",
+                "genero": "Accion",
+                "sinopsis": "Matrix presenta un futuro distopico en el que los seres humanos viven en una realidad simulada mientras sus cuerpos son utilizados como fuente de energia por maquinas inteligentes. El programador de software Neo (interpretado por Keanu Reeves) descubre la verdad sobre la Matrix y se une a un grupo de rebeldes para luchar contra las maquinas y liberar a la humanidad.",
+                "link": "",
+                "comentarios": [
+                    {
+                        "usuario_id": 5,
+                        "comentario": "Las actuaciones en The Matrix son solidas y convincentes. Keanu Reeves interpreta magistralmente a Neo, el protagonista atrapado en una realidad simulada, y su transformacion de un hombre comun a un heroe es cautivadora. Laurence Fishburne y Carrie-Anne Moss tambien destacan en sus roles."
+                    }
+                ],
+                "alta": 5,
+                "puntuaciones":[],
+                "contador": 0
+            },
+            {
+                "id": 7,
+                "titulo": "The Social Network",
+                "anio": "2010",
+                "director": "David Fincher",
+                "genero": "Drama",
+                "sinopsis": "La red social narra la historia de Mark Zuckerberg (interpretado por Jesse Eisenberg) y la creacion de Facebook. La pelicula muestra el ascenso meteorico de Zuckerberg como joven empresario y las complicaciones legales y personales que surgieron durante el proceso. Explora temas como la ambicion, la traicion y el impacto de las redes sociales en la sociedad.",
+                "link": "https://resizing.flixster.com/AfIG39mml5u9vsrAcBL3ubLdzHk=/206x305/v2/https://flxt.tmsimg.com/assets/p8078163_p_v8_ad.jpg",
+                "comentarios": [
+                    {
+                        "usuario_id": 1,
+                        "comentario": "La partitura de Trent Reznor y Atticus Ross en The Social Network es un complemento perfecto para la pelicula. Su musica atmosferica y electronica crea una sensacion de tension y emocion, sumergiendonos aun mas en la historia y aniadiendo un elemento adicional al impacto emocional de la pelicula."
+                    }
+                ],
+                "alta": 1,
+                "puntuaciones":[],
+                "contador": 0
+            },
+            {
+                "id": 8,
+                "titulo": "The Grand Budapest Hotel",
+                "anio": "2014",
+                "director": "Wes Anderson",
+                "genero": "Comedia",
+                "sinopsis": "La pelicula sigue las aventuras de Gustave H. (interpretado por Ralph Fiennes), el legendario conserje de un lujoso hotel europeo, y su fiel joven empleado Zero Moustafa. Ambientada en un periodo de entreguerras, la historia se despliega con humor excentrico, personajes peculiares y una trama que involucra un robo, un asesinato y una valiosa herencia.",
+                "link": "https://m.media-amazon.com/images/M/MV5BMzM5NjUxOTEyMl5BMl5BanBnXkFtZTgwNjEyMDM0MDE@._V1_FMjpg_UX1000_.jpg",
+                "comentarios": [
+                    {
+                        "usuario_id": 5,
+                        "comentario": "La direccion artistica en The Grand Budapest Hotel es impecable. Cada escena esta meticulosamente diseniada con una estetica detallada y colorida que refleja la vision unica de Wes Anderson. Cada cuadro es una obra de arte en si misma, creando un mundo visualmente deslumbrante."
+                    }
+                ],
+                "alta": 5,
+                "puntuaciones":[],
+                "contador": 0
+            },
+            {
+                "id": 9,
+                "titulo": "La La Land",
+                "anio": "2016",
+                "director": "Damien Chazelle",
+                "genero": "Musical",
+                "sinopsis": "La La Land cuenta la historia de Mia (interpretada por Emma Stone), una aspirante a actriz, y Sebastian (interpretado por Ryan Gosling), un talentoso pianista de jazz. Ambos se encuentran y se enamoran en Los Angeles mientras luchan por perseguir sus suenios en la industria del entretenimiento. Con numeros musicales encantadores y una nostalgica oda a los musicales clasicos de Hollywood, la pelicula captura el amor y los sacrificios en la busqueda de la pasion artistica.",
+                "link": "https://pics.filmaffinity.com/La_ciudad_de_las_estrellas_La_La_Land-262021831-mmed.jpg",
+                "comentarios": [
+                    {
+                        "usuario_id": 3,
+                        "comentario": "Ryan Gosling y Emma Stone tienen una quimica cautivadora en La La Land. Su actuacion es convincente y emotiva, logrando transmitir la pasion y la vulnerabilidad de sus personajes. Sus interpretaciones llenan de vida la pantalla y te hacen sentir cada emocion que experimentan."
+                    }
+                ],
+                "alta": 3,
+                "puntuaciones":[],
+                "contador": 0
+            },
+            {
+                "id": 10,
+                "titulo": "Hereditary",
+                "anio": "2018",
+                "director": "Ari Aster",
+                "genero": "Terror",
+                "sinopsis": "Heredtary sigue la historia de la familia Graham, que comienza a experimentar fenemenos sobrenaturales despues de la muerte de la abuela. Conforme los secretos oscuros de la familia se revelan, los miembros se ven envueltos en una espiral de horror y tragedia. La pelicula se distingue por su atmosfera inquietante, actuaciones impactantes y giros inesperados, creando una experiencia terrorifica que se adentra en lo sobrenatural y lo psicologico.",
+                "link": "",
+                "comentarios": [
+                    {
+                        "usuario_id": 2,
+                        "comentario": "Me quede impresionado con la trama retorcida y perturbadora de 'Hereditary'. Cada escena esta cuidadosamente construida para aumentar la tension y el horror psicologico. Sin duda, una pelicula que se quedara contigo mucho despues de haberla visto."
+                    }
+                ],
+                "alta": 2,
+                "puntuaciones":[],
+                "contador": 0
+            },
+            {
+                "id": 11,
+                "titulo": "Sombras en la Oscuridad",
+                "anio": "2022",
+                "director": "Alejandro Mendoza",
+                "genero": "Suspenso",
+                "sinopsis": "En 'Sombras en la Oscuridad' un pequeño pueblo se ve envuelto en un misterio cuando una serie de extrañas desapariciones comienza a ocurrir. La pelicula sigue a un detective local, Alex Turner, quien se ve obligado a enfrentar su oscuro pasado mientras investiga estos misteriosos sucesos. A medida que profundiza en la investigacion, descubre que todas las victimas tienen un vinculo en comun, y lo que parecia ser un caso aislado se convierte en una trama mas siniestra y perturbadora. Con el tiempo en su contra, Alex debe enfrentar sus propios demonios internos y descubrir la verdad antes de que mas vidas se pierdan.",
+                "link": "",
+                "comentarios": [
+                    {
+                        "usuario_id": 1,
+                        "comentario": "Me quede impresionado con la trama retorcida y perturbadora de 'Hereditary'. Cada escena esta cuidadosamente construida para aumentar la tension y el horror psicologico. Sin duda, una pelicula que se quedara contigo mucho despues de haberla visto."
+                    }
+                ],
+                "alta": 1,
+                "puntuaciones":[],
+                "contador": 0
+            }
+        ]
     },
-    {"generos":
-    [
-        {
-            "nombre_genero":"Accion",
-            "id_genero":1
-        },
-        {
-            "nombre_genero":"Aventura",
-            "id_genero":2
-        },
-        {
-            "nombre_genero":"Comedia",
-            "id_genero":3
-        },
-        {
-            "nombre_genero":"Drama",
-            "id_genero":4
-        },
-        {
-            "nombre_genero":"Terror",
-            "id_genero":5
-        },
-        {
-            "nombre_genero":"Ciencia Ficcion",
-            "id_genero":6
-        },
-        {
-            "nombre_genero":"Romance",
-            "id_genero":7
-        },
-        {
-            "nombre_genero":"Fantasia",
-            "id_genero":8
-        },
-        {
-            "nombre_genero":"Suspenso",
-            "id_genero":9
-        },
-        {
-            "nombre_genero":"Animacion",
-            "id_genero":10
-        },
-        {
-            "nombre_genero":"Documental",
-            "id_genero":11
-        },
-        {
-            "nombre_genero":"Crimen",
-            "id_genero":12
-        },
-        {
-            "nombre_genero":"Misterio",
-            "id_genero":13
-        },
-        {
-            "nombre_genero":"Western",
-            "id_genero":14
-        },
-        {
-            "nombre_genero":"Musical",
-            "id_genero":15
-       }
-    ]
+    {
+        "generos": [
+            {
+                "nombre_genero": "Accion",
+                "id_genero": 1
+            },
+            {
+                "nombre_genero": "Aventura",
+                "id_genero": 2
+            },
+            {
+                "nombre_genero": "Comedia",
+                "id_genero": 3
+            },
+            {
+                "nombre_genero": "Drama",
+                "id_genero": 4
+            },
+            {
+                "nombre_genero": "Terror",
+                "id_genero": 5
+            },
+            {
+                "nombre_genero": "Ciencia Ficcion",
+                "id_genero": 6
+            },
+            {
+                "nombre_genero": "Romance",
+                "id_genero": 7
+            },
+            {
+                "nombre_genero": "Fantasia",
+                "id_genero": 8
+            },
+            {
+                "nombre_genero": "Suspenso",
+                "id_genero": 9
+            },
+            {
+                "nombre_genero": "Animacion",
+                "id_genero": 10
+            },
+            {
+                "nombre_genero": "Documental",
+                "id_genero": 11
+            },
+            {
+                "nombre_genero": "Crimen",
+                "id_genero": 12
+            },
+            {
+                "nombre_genero": "Misterio",
+                "id_genero": 13
+            },
+            {
+                "nombre_genero": "Western",
+                "id_genero": 14
+            },
+            {
+                "nombre_genero": "Musical",
+                "id_genero": 15
+            },
+            {
+                "nombre_genero": "Bellaco",
+                "id_genero": 16
+            }
+        ]
     }
 ]
