@@ -3,6 +3,7 @@
 from flask import Flask, jsonify, Response, request
 from http import HTTPStatus
 import json
+import time
 
 app = Flask(__name__)
 
@@ -15,9 +16,6 @@ with open("Proyecto Final/peliculas.json", encoding = "utf-8") as archivo_pelicu
 with open("Proyecto Final/directores.json", encoding = "utf-8") as archivo_directores:
     directores_data = json.load(archivo_directores)
     
-with open("Proyecto Final/usuarios.json", encoding = "utf-8") as archivo_usuarios:
-    usuarios_data = json.load(archivo_usuarios) 
-
 def mostrar_peliculas(peliculas):
     for pelicula in peliculas[-10:]:
         print("Id: " + str(pelicula["id"]))
@@ -88,7 +86,7 @@ def buscar_directores(dato):
 # Ruta de inicio
 @app.route("/", methods = ["GET"])
 def home():
-    return "Bienvenido al sistema de peliculas 'Film Quest"
+    return "BIENVENIDO AL SISTEMA DE PELICULAS 'FILM QUEST"
 
 # 1. Devolver la lista de directores presentes en la plataforma
 @app.route("/peliculas/directores", methods = ["GET"])
@@ -102,42 +100,52 @@ def devolver_todos_generos():
     total_generos = [genero["nombre_genero"] for genero in peliculas_data[1]["generos"]]
     return jsonify(total_generos),  HTTPStatus.OK
 
-@app.route("/peliculas/generos/presentes", methods = ["GET"])
-def devolver_generos():
-    generos = list(set([pelicula["genero"] for pelicula in peliculas_data[0]["peliculas"]]))
-    return jsonify(generos), HTTPStatus.OK
+#@app.route("/peliculas/generos/presentes", methods = ["GET"])
+#def devolver_generos():
+#    generos = list(set([pelicula["genero"] for pelicula in peliculas_data[0]["peliculas"]]))
+#    return jsonify(generos), HTTPStatus.OK
 
 # 3. Devolver la lista de peliculas dirigidas por un director en particular
 @app.route("/peliculas/directores/<director>", methods = ["GET"])
 def devolver_peliculas_por_director(director):
-    encontrar_director = next((dire for dire in directores_data[0]["directores"] if dire["nombre_director"] == director), None)
+    encontrar_director = next((dire for dire in directores_data[0]["directores"] if dire["nombre_director"].lower() == director.lower()), None)
+    flag = 0
+    peliculas = []
     if encontrar_director:
-        peliculas = [pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["director"] == director]
+        for pelicula in peliculas_data[0]["peliculas"]:
+            if pelicula["director"].lower() == director.lower():
+                flag = 1
+                peliculas.append(pelicula)
+
+        if flag == 0:
+            return jsonify("POR EL MOMENTO NO HAY PELICULAS CARGADAS EN EL SISTEMA DE ESE DIRECTOR."), HTTPStatus.NOT_FOUND
+        
         return jsonify(peliculas), HTTPStatus.OK
     else:
-        return jsonify("Director no encontrado."), HTTPStatus.NOT_FOUND
+        return jsonify("DIRECTOR NO ENCONTRADO."), HTTPStatus.NOT_FOUND
 
 # 4. Devolver las peliculas que tienen imagen de portada agregada
 @app.route("/peliculas/imagen", methods = ["GET"])
 def devolver_peliculas_con_imagen():
-    peliculas_imagen = [pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula.get("link") != ""]
-    return jsonify(peliculas_imagen), HTTPStatus.OK
+    peliculas_portada = []
+    for pelicula in peliculas_data[0]["peliculas"]:
+        if pelicula.get("link") != "":
+            peliculas_portada.append(pelicula["titulo"])
+    return jsonify(peliculas_portada), HTTPStatus.OK
 
 # 5. ABM de cada pelicula
 # ALTA (A) DE PELICULAS
 @app.route("/peliculas/agregar/nueva", methods = ["POST"])
 def agregar_pelicula():
     datos_json = request.get_json()
-    usuario_id = id_usuario
-    print(datos_json)
     
     print(len(datos_json))
     
-    if(len(datos_json) < 8):
-        print("Error!, faltan campos en el pedido.")
+    if(len(datos_json) < 9):
+        print("ERROR!, FALTAN CAMPOS EN EL PEDIDO.")
         exit(0)
-    elif(len(datos_json) > 8):
-        print("Error!, exceso de campos en el pedido.")
+    elif(len(datos_json) > 9):
+        print("ERROR!, EXCESO DE CAMPOS EN EL PEDIDO.")
         exit(0)
     else: 
         if (existe_pelicula(datos_json["titulo"]) == False):
@@ -150,15 +158,19 @@ def agregar_pelicula():
             "genero":datos_json["genero"],
             "sinopsis":datos_json["sinopsis"],
             "link":datos_json["link"],
-            "comentarios":{
-                "usuario_id": usuario_id,
-                "comentario": datos_json["comentarios"]
-                },
-            "alta": usuario_id,
-            "puntuaciones": {
-                "usuario_id": usuario_id,
-                "puntuacion": datos_json["puntuaciones"]
-            },
+            "comentarios":[
+                {
+                    "usuario_id": datos_json["usuario_id"],
+                    "comentario": datos_json["comentarios"]
+                }
+            ],
+            "alta": datos_json["usuario_id"],
+            "puntuaciones": [
+                {
+                    "usuario_id": datos_json["usuario_id"],
+                    "puntuacion": datos_json["puntuaciones"]
+                }
+            ],
             "contador": 0
             }
         
@@ -167,23 +179,22 @@ def agregar_pelicula():
             with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
                 json.dump(peliculas_data, archivo_peliculas, indent = 4)
               
-            print("Se cargo la pelicula nueva con exito.")
+            print("SE CARGO LA PELICULA NUEVA CON EXITO DESDE POSTMAN.")
             return jsonify(nueva_pelicula["titulo"]), HTTPStatus.OK
         else:
-            print("Error!. Pelicula ya cargada en base de datos.")
-            return jsonify("No es posible agregar esa pelicula dado que ya se encuentra registrada en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
+            print("ERROR!. PELICULA YA CARGADA EN BASE DE DATOS.")
+            return jsonify("NO ES POSIBLE AGREGAR ESA PELICULA DADO QUE YA SE ENCUENTRA REGISTRADA EN LA BASE DE DATOS DEL SISTEMA."), HTTPStatus.BAD_REQUEST
 
 # MODIFICACION (M) DE PELICULAS 
 # Un usuario puede editar la informacion de una pelicula ya cargada, pero no puede borrar ni editar comentarios de otros usuarios          
-@app.route("/peliculas/editar/<id>", methods = ["PUT"])
-def editar_pelicula(id):
+@app.route("/peliculas/editar/<titulo>", methods = ["PUT"])
+def editar_pelicula(titulo):
     datos_json = request.get_json()
-    usuario_id = id_usuario
     
-    pelicula_editar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["id"] == int(id)), None)
+    pelicula_editar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["titulo"].lower() == titulo.lower()), None)
     
     if pelicula_editar:
-        print("Pelicula encontrada.")
+        print("PELICULA ENCONTRADA.")
         
         if (existe_pelicula(datos_json["titulo"]) == False):
             titulo = datos_json["titulo"] 
@@ -192,129 +203,56 @@ def editar_pelicula(id):
             genero = datos_json["genero"] 
             sinopsis = datos_json["sinopsis"] 
             imagen = datos_json["link"] 
-            comentario = next((coment for coment in pelicula_editar["comentarios"] if coment["usuario_id"] == usuario_id), None)
-            if comentario:
-                comentarios = datos_json["comentarios"]["comentario"] 
-            
-            #pelicula_editar["id"] = id
+            if pelicula_editar["comentarios"]["usuario_id"] == datos_json["usuario_id"]:
+                comentarios = datos_json["comentarios"] 
+
             pelicula_editar["titulo"] = titulo
             pelicula_editar["anio"] = anio
             pelicula_editar["director"] = director
             pelicula_editar["genero"] = genero
             pelicula_editar["sinopsis"] = sinopsis
             pelicula_editar["link"] = imagen
-            pelicula_editar["comentarios"] = comentarios
+            pelicula_editar["comentarios"]["comentario"] = comentarios
             
             with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
                 json.dump(peliculas_data, archivo_peliculas, indent = 4)
             
-            print("La pelicula ha sido editada correctamente.")
+            print("LA PELICULA HA SIDO EDITADA CORRECTAMENTE.")
             return jsonify(pelicula_editar["titulo"]), HTTPStatus.OK
         else:
-            print("Error al guardar los cambios!. Nombre de pelicula ya registrado.")
-            return jsonify("No es posible modificar el nombre de la pelicula dado que ya se encuentra en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
+            print("ERROR!. NOMBRE DE LA PELICULA YA REGISTRADO.")
+            return jsonify("NO ES POSIBLE MODIFICAR EL NOMBRE DE LA PELICULA DADO QUE EL MISMO YA SE ENCUENTRA UTILIZADO EN LA BASE DE DATOS DEL SISTEMA."), HTTPStatus.BAD_REQUEST
     else:
-        print("Error!. Pelicula no encontrada.")
-        return jsonify("No se encontro la pelicula con el ID especificado."), HTTPStatus.NOT_FOUND
+        print("ERROR!. PELICULA NO ENCONTRADA.")
+        return jsonify("NO SE ENCONTRO UNA PELICULA CON ESE TITULO."), HTTPStatus.NOT_FOUND
 
 # BAJA (B) DE PELICULAS   
 # Un usuario puede eliminar una pelicula solo si esta no tiene comentarios de otros usuarios   
-@app.route("/peliculas/eliminar/<id>", methods = ["DELETE"])
-def eliminar_pelicula(id):
-    usuario_id = id_usuario
-    peliculas_eliminar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["id"] == int(id)), None)
-    
-    if peliculas_eliminar:
-        comentarios = next((comentario for comentario in peliculas_eliminar["comentarios"] if comentario["usuario_id"] != usuario_id), None)
-        if comentarios:
-            print("Error!. Pelicula con comentarios.")
-            return jsonify("Error!. No es posible eliminar la pelicula porque tiene comentarios hechos por otros usuarios."), HTTPStatus.BAD_REQUEST
-        else:
-            peliculas_data[0]["peliculas"].remove(peliculas_eliminar)
-            
-            with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
-                json.dump(peliculas_data, archivo_peliculas, indent = 4)
-                
-            print("La pelicula ha sido eliminada correctamente.")
-            return jsonify(peliculas_eliminar["titulo"]), HTTPStatus.OK
-    else:
-        print("Error!. Pelicula no encontrada.")
-        return jsonify("No se encontro la pelicula con el ID especificado."), HTTPStatus.NOT_FOUND
-
-# ALTA (A) DE GENEROS    
-@app.route("/peliculas/generos/agregar/nuevo", methods = ["POST"])
-def agregar_genero():
+@app.route("/peliculas/eliminar/<titulo>", methods = ["DELETE"])
+def eliminar_pelicula(titulo):
     datos_json = request.get_json()
     
-    if (existe_genero(datos_json["nombre_genero"]) == False):      
-        id_genero = len(peliculas_data[1]["generos"]) + 1
-        nuevo_genero = {
-            "nombre_genero":datos_json["nombre_genero"],
-            "id_genero":id_genero
-        }
-        
-        peliculas_data[1]["generos"].append(nuevo_genero)
-        
-        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
-                json.dump(peliculas_data, archivo_peliculas, indent = 4)
-               
-        print("Se cargo el genero nuevo con exito.")
-        return jsonify(nuevo_genero["nombre_genero"]), HTTPStatus.OK
-    else:
-        print("Error!. Genero ya cargado en base de datos.")
-        return jsonify("No es posible agregar ese genero dado que ya se encuentra registrado en la base de datos del sistema."), HTTPStatus.BAD_REQUEST
+    pelicula_eliminar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["titulo"].lower() == titulo.lower()), None)
 
-# MODIFICACION (M) DE GENEROS        
-@app.route("/peliculas/generos/editar/<id>", methods = ["PUT"])
-def editar_genero(id):
-    datos_json = request.get_json()
-    
-    genero_editar = next((genero for genero in peliculas_data[1]["generos"] if genero["id_genero"] == int(id)), None)
-    
-    if genero_editar:
-        print("Genero encontrado.")
+    if pelicula_eliminar:
+        comentarios = pelicula_eliminar["comentarios"]
+        print(comentarios)
+        for comentario in comentarios:
+            comentario_usuario_id = comentario["usuario_id"]
+            if comentario_usuario_id != datos_json["usuario_id"]:  
+                print("ERROR!. PELICULA CON COMENTARIOS.")
+                return jsonify("ERROR!. NO ES POSIBLE ELIMINAR LA PELICULA PORQUE TIENE COMENTARIOS HECHOS POR OTROS USUARIOS."), HTTPStatus.BAD_REQUEST
         
-        nombre = datos_json["nombre_genero"]
-        
-        for pelicula in peliculas_data[0]["peliculas"]:
-            if (pelicula["genero"] == genero_editar["nombre_genero"]): 
-                pelicula["genero"] =  nombre
-                print("modificado aca tambien!!!")
-
-        genero_editar["nombre_genero"] = nombre
-                
-        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
-            json.dump(peliculas_data, archivo_peliculas, indent = 4)
-        
-        print("El genero ha sido editado correctamente.")
-        return jsonify(genero_editar["nombre_genero"]), HTTPStatus.OK
-    else:
-        print("Error!. Genero no encontrado.")
-        return jsonify("No se encontro el genero con el ID especificado."), HTTPStatus.NOT_FOUND
-    
-# BAJA (B) DE GENEROS
-@app.route("/peliculas/generos/eliminar/<id>", methods = ["DELETE"])
-def eliminar_genero(id):
-    genero_eliminar = next((genero for genero in peliculas_data[1]["generos"] if genero["id_genero"] == int(id)), None)
-    
-    if genero_eliminar:
-        print("Genero encontrado.")
-        
-        for pelicula in peliculas_data[0]["peliculas"]:
-            if (pelicula["genero"] == genero_eliminar["nombre_genero"]):
-                pelicula["genero"] = "Desconocido"
-                print("Eliminado aca tambien!!!")
+        peliculas_data[0]["peliculas"].remove(pelicula_eliminar)
             
-        peliculas_data[1]["generos"].remove(genero_eliminar)
-        
         with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
             json.dump(peliculas_data, archivo_peliculas, indent = 4)
-        
-        print("El genero ha sido eliminado correctamente.")
-        return jsonify(genero_eliminar["nombre_genero"]), HTTPStatus.OK
+                    
+        print("LA PELICULA HA SIDO ELIMINADA CORRECTAMENTE.")
+        return jsonify(pelicula_eliminar["titulo"]), HTTPStatus.OK
     else:
-        print("Error!. Genero no encontrado.")
-        return jsonify("No se encontro el genero con el ID especificado."), HTTPStatus.NOT_FOUND
+        print("ERROR!. PELICULA NO ENCONTRADA.")
+        return jsonify("NO SE ENCONTRO UNA PELICULA CON ESE TITULO."), HTTPStatus.NOT_FOUND
     
 # PAGINADO
 # Implementar paginado. Si la cantidad de elementos a mostrar por una pantalla es demasiada, mostrar un subconjunto y brindar la posibilidad de moverse a otra pantalla.
@@ -322,14 +260,16 @@ def eliminar_genero(id):
 def obtener_peliculas_paginadas(pagina):
     elementos_por_pagina = 3
     
-    inicio = (pagina - 1) * elementos_por_pagina
+    inicio = (int(pagina) - 1) * elementos_por_pagina
     fin = inicio + elementos_por_pagina
     
     peliculas_paginadas = peliculas_data[0]["peliculas"][inicio:fin]
     
     return jsonify(peliculas_paginadas), HTTPStatus.OK
 
-    
+#if __name__ == "__main__":
+#    app.run(debug=True)
+        
 def mostrar_menu():
     print("\n --- MENU DE OPCIONES ---")
     print("1. AGREGAR PELICULA") #HECHO
@@ -344,13 +284,17 @@ def mostrar_menu():
     print("10. AÑADIR DIRECTOR") #HECHO
     print("11. MODIFICAR DIRECTOR") #HECHO
     print("12. ELIMINAR DIRECTOR") #HECHO
-    print("13. AÑADIR GENERO")
-    print("14. MODIFICAR GENERO")
-    print("15. ELIMINAR GENERO")
+    print("13. AÑADIR GENERO") #HECHO
+    print("14. MODIFICAR GENERO") #HECHO
+    print("15. ELIMINAR GENERO") #HECHO
     print("16. AÑADIR PUNTUACION") #HECHO
     print("17. MODIFICAR PUNTUACION") #HECHO
     print("18. ELIMINAR PUNTUACION") #HECHO
-    print("19. SALIR\n") #HECHO
+    print("19. DIRECTORES CARGADOS") #HECHO
+    print("20. GENEROS CARGADOS") #HECHO
+    print("21. BUSCAR PELICULAS POR DIRECTOR") #HECHO
+    print("22. VER PELICULAS CON PORTADA") #HECHO
+    print("23. SALIR\n") #HECHO
     
     opcion = int(input("Ingrese una opcion: "))
     print()
@@ -380,7 +324,10 @@ if usuario:
             opcion = mostrar_menu()
                 
             if (opcion == 1):
+                print("++++++++++++++++++++++++++")
                 print("SECCION 'AGREGAR PELICULA'")
+                print("++++++++++++++++++++++++++")
+                print()
                 usuario_id = id_usuario
 
                 print("LISTA DE DIRECTORES DISPONIBLES EN EL SISTEMA: ")
@@ -442,7 +389,10 @@ if usuario:
                     print("ERROR!. LA PELICULA YA SE ENCUENTRA CARGADA EN LA BASE DE DATOS.")
                     break
             elif (opcion == 2):
+                print("+++++++++++++++++++++++++")
                 print("SECCION 'EDITAR PELICULA'")
+                print("+++++++++++++++++++++++++")
+                print()
                 usuario_id = id_usuario
                 
                 titulo_pelicula = input("NOMBRE DE LA PELICULA: ")
@@ -465,7 +415,11 @@ if usuario:
                     item = input("DESEA MODIFICAR EL TITULO? [SI - NO]: ")
                     if item.upper() == "SI":
                         titulo = input("NOMBRE DE LA PELICULA: ")
-                        pelicula_editar["titulo"] = titulo
+                        while existe_pelicula(titulo):
+                            print("NO ES POSIBLE MODIFICAR EL NOMBRE DE LA PELICULA DADO QUE EL MISMO YA SE ENCUENTRA UTILIZADO EN LA BASE DE DATOS DEL SISTEMA. INTENTE NUEVAMENTE.")
+                            titulo = input("NOMBRE DE LA PELICULA: ")
+                        else:
+                            pelicula_editar["titulo"] = titulo
                     item = input("DESEA MODIFICAR EL AÑO? [SI - NO]: ")
                     if item.upper() == "SI":
                         anio = input("AÑO DE ESTRENO: ")
@@ -494,30 +448,32 @@ if usuario:
                         comentario = next((coment for coment in pelicula_editar["comentarios"] if coment["usuario_id"] == usuario_id), None)
                         if comentario:
                             comentarios = input("COMENTARIO: ")
-                            pelicula_editar["comentarios"]["comentario"] = comentarios
+                            comentario["comentario"] = comentarios
                         else:
                             print("USTED NO PUEDE EDITAR COMENTARIOS PORQUE NO HIZO NINGUNO.")
    
                     with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
                         json.dump(peliculas_data, archivo_peliculas, indent = 4)
-                    
-                    print()    
+                        
                     print("LA PELICULA HA SIDO EDITADA CORRECTAMENTE.")
                 else:
                     print("ERROR!. PELICULA NO ENCONTRADA.")
             elif (opcion == 3):
+                print("+++++++++++++++++++++++++++")
                 print("SECCION 'ELIMINAR PELICULA'")
+                print("+++++++++++++++++++++++++++")
+                print()
                 usuario_id = id_usuario
                 titulo_pelicula = input("NOMBRE DE LA PELICULA: ")
                 
-                peliculas_eliminar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["titulo"].lower() == titulo_pelicula.lower()), None)
+                pelicula_eliminar = next((pelicula for pelicula in peliculas_data[0]["peliculas"] if pelicula["titulo"].lower() == titulo_pelicula.lower()), None)
                 
-                if peliculas_eliminar:
-                    comentarios = next((comentario for comentario in peliculas_eliminar["comentarios"] if comentario["usuario_id"] != usuario_id), None)
+                if pelicula_eliminar:
+                    comentarios = next((comentario for comentario in pelicula_eliminar["comentarios"] if comentario["usuario_id"] != usuario_id), None)
                     if comentarios:
                         print("ERROR!. PELICULA CON COMENTARIOS.")
                     else:
-                        peliculas_data[0]["peliculas"].remove(peliculas_eliminar)
+                        peliculas_data[0]["peliculas"].remove(pelicula_eliminar)
                         
                         with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
                             json.dump(peliculas_data, archivo_peliculas, indent = 4)
@@ -526,7 +482,10 @@ if usuario:
                 else:
                     print("ERROR!. PELICULA NO ENCONTRADA.")
             elif (opcion == 4):
+                print("+++++++++++++++++++++++++")
                 print("SECCION 'BUSCAR DIRECTOR'")
+                print("+++++++++++++++++++++++++")
+                print()
                 
                 director = input("NOMBRE DEL DIRECTOR A BUSCAR: ")
                     
@@ -539,7 +498,10 @@ if usuario:
                     for resultado in resultados_directores:
                         print(resultado["nombre_director"])                                              
             elif (opcion == 5):
+                print("+++++++++++++++++++++++++")
                 print("SECCION 'BUSCAR PELICULA'")
+                print("+++++++++++++++++++++++++")
+                print()
             
                 pelicula = input("NOMBRE DE LA PELICULA A BUSCAR: ")
                 
@@ -556,7 +518,10 @@ if usuario:
                 with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
                     json.dump(peliculas_data, archivo_peliculas, indent = 4)
             elif (opcion == 6):
+                print("++++++++++++++++++++++++")
                 print("SECCION 'AÑADIR USUARIO'")
+                print("++++++++++++++++++++++++")
+                print()
                 
                 nombre_usuario = input("NOMBRE DE USUARIO: ")
                 contrasenia = input("CONTRASEÑA DE USUARIO: ")
@@ -580,7 +545,11 @@ if usuario:
                 else:
                     print("ERROR!. NO ES POSIBLE AGREGAR ESE USUARIO DADO QUE YA SE ENCUENTRA REGISTRADO EN LA BASE DE DATOS DEL SISTEMA.")
             elif (opcion == 7):
+                print("+++++++++++++++++++++++++++")
                 print("SECCION 'MODIFICAR USUARIO'")
+                print("+++++++++++++++++++++++++++")
+                print()
+
                 usuario = input("NOMBRE DEL USUARIO A MODIFICAR: ")
                 
                 usuario_editar = next((user for user in usuarios_data[0]["usuarios"] if user["user"].lower() == usuario.lower()), None)
@@ -611,8 +580,11 @@ if usuario:
                 else:
                     print("ERROR!. USUARIO NO ENCONTRADO.")
             elif (opcion == 8):
+                print("++++++++++++++++++++++++++")
                 print("SECCION 'ELIMINAR USUARIO'")
-                
+                print("++++++++++++++++++++++++++")
+                print()
+                                
                 usuario = input("NOMBRE DEL USUARIO A ELIMINAR: ")    
 
                 usuario_eliminar = next((user for user in usuarios_data[0]["usuarios"] if user["user"].lower() == usuario.lower()), None)
@@ -632,7 +604,10 @@ if usuario:
                 else:
                     print("ERROR!. USUARIO NO ENCONTRADO.")
             elif (opcion == 9):
+                print("+++++++++++++++++++++++++++++++++++++++")
                 print("SECCION 'ASIGNAR PERMISOS A UN USUARIO'")
+                print("+++++++++++++++++++++++++++++++++++++++")
+                print()
                 
                 usuario_modificar_permiso = input("NOMBRE DEL USUARIO PARA MODIFICAR PERMISOS: ")
                 
@@ -655,7 +630,10 @@ if usuario:
                 else:
                     print("ERROR!. USUARIO NO ENCONTRADO.")
             elif (opcion == 10):
+                print("+++++++++++++++++++++++++")
                 print("SECCION 'AÑADIR DIRECTOR'")
+                print("+++++++++++++++++++++++++")
+                print()
                 
                 nombre_director = input("NOMBRE DE DIRECTOR: ")
                 
@@ -675,7 +653,10 @@ if usuario:
                 else:
                     print("ERROR!. NO ES POSIBLE AGREGAR ESE DIRECTOR DADO QUE YA SE ENCUENTRA REGISTRADO EN LA BASE DE DATOS DEL SISTEMA.")
             elif (opcion == 11):
+                print("++++++++++++++++++++++++++++")
                 print("SECCION 'MODIFICAR DIRECTOR'")
+                print("++++++++++++++++++++++++++++")
+                print()
                 
                 director = input("NOMBRE DEL DIRECTOR A MODIFICAR: ")
                 
@@ -705,7 +686,10 @@ if usuario:
                 else:
                     print("ERROR!. DIRECTOR NO ENCONTRADO.")
             elif (opcion == 12):
+                print("+++++++++++++++++++++++++++")
                 print("SECCION 'ELIMINAR DIRECTOR'")
+                print("+++++++++++++++++++++++++++")
+                print()
                 
                 director = input("NOMBRE DEL DIRECTOR A ELIMINAR: ")
                 
@@ -729,8 +713,90 @@ if usuario:
                     print("EL DIRECTOR HA SIDO ELIMINADO CORRECTAMENTE.")
                 else:
                     print("ERROR!. DIRECTOR NO ENCONTRADO.")
+            elif (opcion == 13):
+                print("+++++++++++++++++++++++")
+                print("SECCION 'AÑADIR GENERO'")
+                print("+++++++++++++++++++++++")
+                print()
+                
+                nombre_genero = input("NOMBRE DE GENERO: ")
+                
+                if (existe_genero(nombre_genero) == False):      
+                    id = len(peliculas_data[1]["generos"]) + 1
+                    nuevo_genero = {
+                        "nombre_genero":nombre_genero,
+                        "id_genero":id
+                    }
+                    
+                    peliculas_data[1]["generos"].append(nuevo_genero)
+                    
+                    with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+                            json.dump(peliculas_data, archivo_peliculas, indent = 4)
+                        
+                    print("SE CARGO EL GENERO NUEVO CON EXITO.")
+                else:
+                    print("ERROR!. NO ES POSIBLE AGREGAR ESE GENERO DADO QUE YA SE ENCUENTRA REGISTRADO EN LA BASE DE DATOS DEL SISTEMA.")
+            elif (opcion == 14):
+                print("++++++++++++++++++++++++++")
+                print("SECCION 'MODIFICAR GENERO'")
+                print("++++++++++++++++++++++++++")
+                print()
+                
+                genre = input("NOMBRE DEL GENERO A MODIFICAR: ")
+                
+                genero_editar = next((genero for genero in peliculas_data[1]["generos"] if genero["nombre_genero"].lower() == genre.lower()), None)
+                
+                if genero_editar:
+                    print("GENERO ENCONTRADO.")
+                    
+                    nombre_genero = input("NOMBRE DE GENERO: ")
+                    
+                    if existe_genero(nombre_genero):
+                        print("ERROR!. NOMBRE DE DIRECTOR YA REGISTRADO EN EL SISTEMA.")
+                    else:
+                        for pelicula in peliculas_data[0]["peliculas"]:
+                            if (pelicula["genero"] == genero_editar["nombre_genero"]): 
+                                pelicula["genero"] =  nombre_genero
+
+                        genero_editar["nombre_genero"] = nombre_genero
+                                
+                        with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+                            json.dump(peliculas_data, archivo_peliculas, indent = 4)
+                        
+                        print("EL GENERO HA SIDO EDITADO CORRECTAMENTE.")
+                else:
+                    print("ERROR!. GENERO NO ENCONTRADO.")
+            elif (opcion == 15):
+                print("+++++++++++++++++++++++++")
+                print("SECCION 'ELIMINAR GENERO'")
+                print("+++++++++++++++++++++++++")
+                print()
+                
+                genre = input("NOMBRE DEL GENERO A ELIMINAR: ")
+                
+                genero_eliminar = next((genero for genero in peliculas_data[1]["generos"] if genero["nombre_genero"].lower() == genre.lower()), None)
+                
+                if genero_eliminar:
+                    print("GENERO ENCONTRADO.")
+                    
+                    for pelicula in peliculas_data[0]["peliculas"]:
+                        if (pelicula["genero"] == genero_eliminar["nombre_genero"]):
+                            pelicula["genero"] = "Desconocido"
+                        
+                    peliculas_data[1]["generos"].remove(genero_eliminar)
+                    
+                    with open("Proyecto Final/peliculas.json", "w", encoding = "utf-8") as archivo_peliculas:
+                        json.dump(peliculas_data, archivo_peliculas, indent = 4)
+                    
+                    print("EL GENERO HA SIDO ELIMINADO CORRECTAMENTE.")
+                else:
+                    print("ERROR!. GENERO NO ENCONTRADO.")
             elif (opcion == 16):
+                print("+++++++++++++++++++++++++++")
                 print("SECCION 'AÑADIR PUNTUACION'")
+                print("+++++++++++++++++++++++++++")
+                print()
+                
                 usuario_id = id_usuario
                 
                 titulo = input("PELICULA QUE DESEA PUNTUAR: ")    
@@ -757,7 +823,11 @@ if usuario:
                 else:
                     print("NO SE ENCONTRO UNA PELICULA CON ESE NOMBRE EN LA BASE DE DATOS DEL SISTEMA.")
             elif (opcion == 17):
+                print("++++++++++++++++++++++++++++++")
                 print("SECCION 'MODIFICAR PUNTUACION'")
+                print("++++++++++++++++++++++++++++++")
+                print()
+                
                 usuario_id = id_usuario
                 
                 titulo = input("PELICULA QUE DESEA PUNTUAR: ")  
@@ -781,7 +851,11 @@ if usuario:
                 else:
                     print("PELICULA NO ENCONTRADA.")
             elif (opcion == 18):
+                print("+++++++++++++++++++++++++++++")
                 print("SECCION 'ELIMINAR PUNTUACION'")
+                print("+++++++++++++++++++++++++++++")
+                print()
+                
                 usuario_id = id_usuario
                     
                 titulo = input("PELICULA QUE DESEA PUNTUAR: ")
@@ -802,20 +876,64 @@ if usuario:
                         print("ERROR!. NO SE ENCONTRO UNA PUNTUACION DEL USUARIO A ELIMINAR PARA ESTA PELICULA.")
                 else:
                     print("PELICULA NO ENCONTRADA.")
+            elif (opcion == 19):
+                print("+++++++++++++++++++++++++++++")
+                print("SECCION 'DIRECTORES CARGADOS'")
+                print("+++++++++++++++++++++++++++++")
+                print()
+                
+                for director in directores_data[0]["directores"]:
+                    print(director["nombre_director"])
             elif (opcion == 20):
+                print("++++++++++++++++++++++++++")
+                print("SECCION 'GENEROS CARGADOS'")
+                print("++++++++++++++++++++++++++")
+                print()
+                
+                for genero in peliculas_data[1]["generos"]:
+                    print(genero["nombre_genero"]) 
+            elif (opcion == 21):
+                print("++++++++++++++++++++++++++++++++++++++")
+                print("SECCION 'BUSCAR PELICULA POR DIRECTOR'")
+                print("++++++++++++++++++++++++++++++++++++++")
+                print()
+                
+                director = input("NOMBRE DEL DIRECTOR A BUSCAR: ")
+                
+                encontrar_director = next((dire for dire in directores_data[0]["directores"] if dire["nombre_director"].lower() == director.lower()), None)
+                flag = 0
+                if encontrar_director:
+                    for pelicula in peliculas_data[0]["peliculas"]:
+                        if pelicula["director"].lower() == director.lower():
+                            print(pelicula["titulo"])
+                            flag = 1
+                    
+                    if flag == 0:
+                        print("POR EL MOMENTO NO HAY PELICULAS CARGADAS EN EL SISTEMA DE ESE DIRECTOR.")   
+                else:
+                    print("DIRECTOR NO ENCONTRADO.")
+            elif (opcion == 22):
+                print("+++++++++++++++++++++++++++++++++++")
+                print("SECCION 'VER PELICULAS CON PORTADA'")
+                print("+++++++++++++++++++++++++++++++++++")
+                print()
+                
+                for pelicula in peliculas_data[0]["peliculas"]:
+                    if pelicula.get("link") != "":
+                        print(pelicula["titulo"])
+            elif (opcion == 23):
+                print("AGUARDE UNOS SEGUNDOS...")
+                time.sleep(5)
                 print("GRACIAS POR UTILIZAR EL SISTEMA. HASTA LUEGO!")
                 exit(0)
             else:
-                print("OPCION INVALIDA. INTENTE NUEVAMENTE") 
+                print("OPCION INVALIDA. INTENTE NUEVAMENTE.")
     else:
         #El programa tendra un modulo publico, es decir, una pantalla que puede ser accedida sin necesidad de tener cuenta ni estar logueado
         #En esa pantalla se mostraran las ultimas 10 peliculas agregadas al sistema independientemente del usuario
         print("USTED SOLO PUEDE ACCEDER AL MODULO PUBLICO YA QUE NO ESTA LOGUEADO EN EL SISTEMA O NO TIENE LOS PERMISOS NECESARIOS PARA ACCEDER AL MODULO PRIVADO.")
         print("A CONTINUACION SE MOSTRARAN LAS ULTIMAS 10 PELICULAS AGREGADAS AL SISTEMA:\n")
         mostrar_peliculas(peliculas_data[0]["peliculas"])     
-        print("\nGRACIAS POR UTLIZAR EL SISTEMA, HASTA LA PROXIMA!")       
+        print("\nGRACIAS POR UTLIZAR EL SISTEMA, HASTA LA PROXIMA!")      
 else:
-    print("ERROR, EL USUARIO NO FUE ENCONTRADO EN LA BASE DE DATOS.")      
-    
-if __name__ == "__main__":
-    app.run(debug=True)
+    print("ERROR, EL USUARIO NO FUE ENCONTRADO EN LA BASE DE DATOS.")  

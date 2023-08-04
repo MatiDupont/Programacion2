@@ -16,7 +16,7 @@
                     }
                 ],
                 "alta": 1,
-                "puntuaciones":[
+                "puntuaciones": [
                     {
                         "usuario_id": 1,
                         "puntuacion": 4
@@ -36,10 +36,20 @@
                 "genero": "Drama",
                 "sinopsis": "La pelicula sigue la historia de Andy Dufresne (interpretado por Tim Robbins), un banquero condenado injustamente por el asesinato de su esposa e amante. Es enviado a la prision de Shawshank, donde encuentra amistad y esperanza en medio de la brutalidad del sistema penitenciario. Con determinacion y astucia, Andy trabaja para ganarse el respeto de los demas reclusos y encuentra una manera de mantener viva la esperanza de la libertad.",
                 "link": "https://pics.filmaffinity.com/Cadena_perpetua-576140557-large.jpg",
-                "comentarios": [],
+                "comentarios": [
+                    {
+                        "usuario_id": 2,
+                        "comentario": "Comentario de prueba"
+                    }
+                ],
                 "alta": 2,
-                "puntuaciones":[],
-                "contador": 0
+                "puntuaciones": [
+                    {
+                        "usuario_id": 2,
+                        "puntuacion": 10
+                    }
+                ],
+                "contador": 1
             },
             {
                 "id": 3,
@@ -48,7 +58,7 @@
                 "director": "Christopher Nolan",
                 "genero": "Accion",
                 "sinopsis": "Batman (interpretado por Christian Bale) se enfrenta al Joker (interpretado por Heath Ledger), un despiadado criminal que desata el caos en Gotham City. Mientras Batman lucha por proteger la ciudad, se ve obligado a tomar decisiones dificiles que pondran a prueba su moralidad y su identidad como defensor de la justicia.",
-                "link": "https://musicart.xboxlive.com/7/abb02f00-0000-0000-0000-000000000002/504/image.jpg?w=1920&h=1080",
+                "link": "",
                 "comentarios": [
                     {
                         "usuario_id": 3,
@@ -56,8 +66,13 @@
                     }
                 ],
                 "alta": 3,
-                "puntuaciones":[],
-                "contador": 0
+                "puntuaciones": [
+                    {
+                        "usuario_id": 3,
+                        "puntuacion": 7
+                    }
+                ],
+                "contador": 1
             },
             {
                 "id": 4,
@@ -67,9 +82,19 @@
                 "genero": "Ciencia Ficcion",
                 "sinopsis": "En un futuro cercano, la humanidad se enfrenta a una crisis en la Tierra debido a la escasez de recursos. Un grupo de exploradores, liderado por el astronauta Cooper (interpretado por Matthew McConaughey), se embarca en un viaje interestelar en busca de un nuevo hogar para la humanidad. La pel\u00edcula explora temas como el amor, la familia y la supervivencia en el vasto y desconocido espacio.",
                 "link": "https://s3.amazonaws.com/nightjarprod/content/uploads/sites/130/2021/08/19085635/gEU2QniE6E77NI6lCU6MxlNBvIx-scaled.jpg",
-                "comentarios": [],
+                "comentarios": [
+                    {
+                        "usuario_id": 3,
+                        "comentario": "Comentario de prueba"
+                    }
+                ],
                 "alta": 3,
-                "puntuaciones":[],
+                "puntuaciones": [
+                    {
+                        "usuario_id": 3,
+                        "puntuacion": 9
+                    }
+                ],
                 "contador": 0
             },
             {
@@ -80,10 +105,20 @@
                 "genero": "Drama",
                 "sinopsis": "El padrino sigue la historia de la familia Corleone, una poderosa familia criminal italiana en Estados Unidos. La pelicula se centra en Michael Corleone (interpretado por Al Pacino), quien se ve arrastrado al mundo del crimen organizado a medida que asume el papel de lider de la familia. Con una narrativa magistral, personajes iconicos y una exploracion de temas como la lealtad, la violencia y el poder, El padrino es considerada una obra maestra del cine.",
                 "link": "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg",
-                "comentarios": [],
+                "comentarios": [
+                    {
+                        "usuario_id": 4,
+                        "comentario": "Comentario de prueba"
+                    }
+                ],
                 "alta": 4,
-                "puntuaciones":[],
-                "contador": 0
+                "puntuaciones": [
+                    {
+                        "usuario_id": 4,
+                        "puntuacion": 2
+                    }
+                ],
+                "contador": 1
             },
             {
                 "id": 6,
@@ -95,13 +130,18 @@
                 "link": "",
                 "comentarios": [
                     {
-                        "usuario_id": 5,
+                        "usuario_id": 1,
                         "comentario": "Las actuaciones en The Matrix son solidas y convincentes. Keanu Reeves interpreta magistralmente a Neo, el protagonista atrapado en una realidad simulada, y su transformacion de un hombre comun a un heroe es cautivadora. Laurence Fishburne y Carrie-Anne Moss tambien destacan en sus roles."
                     }
                 ],
-                "alta": 5,
-                "puntuaciones":[],
-                "contador": 0
+                "alta": 1,
+                "puntuaciones": [
+                    {
+                        "usuario_id": 1,
+                        "puntuacion": 7
+                    }
+                ],
+                "contador": 1
             },
             {
                 "id": 7,
@@ -118,8 +158,13 @@
                     }
                 ],
                 "alta": 1,
-                "puntuaciones":[],
-                "contador": 0
+                "puntuaciones": [
+                    {
+                        "usuario_id": 1,
+                        "puntuacion": 8
+                    }
+                ],
+                "contador": 2
             },
             {
                 "id": 8,
@@ -131,13 +176,22 @@
                 "link": "https://m.media-amazon.com/images/M/MV5BMzM5NjUxOTEyMl5BMl5BanBnXkFtZTgwNjEyMDM0MDE@._V1_FMjpg_UX1000_.jpg",
                 "comentarios": [
                     {
-                        "usuario_id": 5,
+                        "usuario_id": 2,
                         "comentario": "La direccion artistica en The Grand Budapest Hotel es impecable. Cada escena esta meticulosamente diseniada con una estetica detallada y colorida que refleja la vision unica de Wes Anderson. Cada cuadro es una obra de arte en si misma, creando un mundo visualmente deslumbrante."
                     }
                 ],
-                "alta": 5,
-                "puntuaciones":[],
-                "contador": 0
+                "alta": 2,
+                "puntuaciones": [
+                    {
+                        "usuario_id": 2,
+                        "puntuacion": 9
+                    },
+                    {
+                        "usuario_id": 1,
+                        "puntuacion": 7
+                    }
+                ],
+                "contador": 1
             },
             {
                 "id": 9,
@@ -154,7 +208,12 @@
                     }
                 ],
                 "alta": 3,
-                "puntuaciones":[],
+                "puntuaciones": [
+                    {
+                        "usuario_id": 3,
+                        "puntuacion": 5
+                    }
+                ],
                 "contador": 0
             },
             {
@@ -172,7 +231,12 @@
                     }
                 ],
                 "alta": 2,
-                "puntuaciones":[],
+                "puntuaciones": [
+                    {
+                        "usuario_id": 2,
+                        "puntuacion": 4
+                    }
+                ],
                 "contador": 0
             },
             {
@@ -181,16 +245,25 @@
                 "anio": "2022",
                 "director": "Alejandro Mendoza",
                 "genero": "Suspenso",
-                "sinopsis": "En 'Sombras en la Oscuridad' un pequeño pueblo se ve envuelto en un misterio cuando una serie de extrañas desapariciones comienza a ocurrir. La pelicula sigue a un detective local, Alex Turner, quien se ve obligado a enfrentar su oscuro pasado mientras investiga estos misteriosos sucesos. A medida que profundiza en la investigacion, descubre que todas las victimas tienen un vinculo en comun, y lo que parecia ser un caso aislado se convierte en una trama mas siniestra y perturbadora. Con el tiempo en su contra, Alex debe enfrentar sus propios demonios internos y descubrir la verdad antes de que mas vidas se pierdan.",
+                "sinopsis": "En 'Sombras en la Oscuridad' un pequenio pueblo se ve envuelto en un misterio cuando una serie de extranias desapariciones comienza a ocurrir. La pelicula sigue a un detective local, Alex Turner, quien se ve obligado a enfrentar su oscuro pasado mientras investiga estos misteriosos sucesos. A medida que profundiza en la investigacion, descubre que todas las victimas tienen un vinculo en comun, y lo que parecia ser un caso aislado se convierte en una trama mas siniestra y perturbadora. Con el tiempo en su contra, Alex debe enfrentar sus propios demonios internos y descubrir la verdad antes de que mas vidas se pierdan.",
                 "link": "",
                 "comentarios": [
                     {
                         "usuario_id": 1,
+                        "comentario": "funcionara esta vez?"
+                    },
+                    {
+                        "usuario_id": 2,
                         "comentario": "Me quede impresionado con la trama retorcida y perturbadora de 'Hereditary'. Cada escena esta cuidadosamente construida para aumentar la tension y el horror psicologico. Sin duda, una pelicula que se quedara contigo mucho despues de haberla visto."
                     }
                 ],
                 "alta": 1,
-                "puntuaciones":[],
+                "puntuaciones": [
+                    {
+                        "usuario_id": 1,
+                        "puntuacion": 7
+                    }
+                ],
                 "contador": 0
             }
         ]
