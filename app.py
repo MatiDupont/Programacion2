@@ -552,7 +552,7 @@ if usuario:
 
                 usuario = input("NOMBRE DEL USUARIO A MODIFICAR: ")
                 
-                usuario_editar = next((user for user in usuarios_data[0]["usuarios"] if user["user"].lower() == usuario.lower()), None)
+                usuario_editar = next((user for user in usuarios_data[0]["usuarios"] if user["user"] == usuario), None)
 
                 if usuario_editar:
                     print("USUARIO ENCONTRADO.")
@@ -566,10 +566,6 @@ if usuario:
                         if item.upper() == "SI":
                             contrasenia = input("CONTRASEÑA DE USUARIO: ")
                             usuario_editar["password"] = contrasenia
-                        item = input("DESEA MODIFICAR EL PERMISO DE USUARIO? [SI - NO]:")
-                        if item.upper() == "SI":
-                            permiso = input("PERMISO DE USUARIO: ")
-                            usuario_editar["permiso"] = permiso
                         
                         with open("Proyecto Final/usuarios.json", "w", encoding = "utf-8") as archivo_usuarios:
                             json.dump(usuarios_data, archivo_usuarios, indent = 4)
@@ -587,7 +583,7 @@ if usuario:
                                 
                 usuario = input("NOMBRE DEL USUARIO A ELIMINAR: ")    
 
-                usuario_eliminar = next((user for user in usuarios_data[0]["usuarios"] if user["user"].lower() == usuario.lower()), None)
+                usuario_eliminar = next((user for user in usuarios_data[0]["usuarios"] if user["user"] == usuario), None)
 
                 if usuario_eliminar:
                     print("USUARIO ENCONTRADO.")
